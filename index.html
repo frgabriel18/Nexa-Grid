@@ -1,0 +1,416 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <!-- deixa os acentos funcionando -->
+    <meta charset="UTF-8" />
+
+    <!-- deixa o site responsivo -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- nome oficial -->
+    <title>AeroGrid</title>
+
+    <!-- css -->
+    <link rel="stylesheet" href="style.css" />
+
+    <!-- biblioteca que cria excel com estilos -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.min.js"></script>
+  </head>
+
+  <body>
+    <!-- bolhas decorativas -->
+    <div class="bolha bolha-1"></div>
+    <div class="bolha bolha-2"></div>
+    <div class="bolha bolha-3"></div>
+
+    <!-- menu lateral -->
+    <aside>
+      <!-- logo -->
+      <div class="marca">
+        <div class="logo-aerogrid">
+          <span>◉</span>
+        </div>
+
+        <div>
+          <h1>AeroGrid</h1>
+
+          <p>organize. visualize. respire.</p>
+        </div>
+      </div>
+
+      <!-- navegacao -->
+      <nav>
+        <button onclick="mostrarDashboard()">
+          <span class="icone-menu"> ⌂ </span>
+
+          Dashboard
+        </button>
+
+        <button onclick="abrirCriacao()">
+          <span class="icone-menu"> ＋ </span>
+
+          Nova planilha
+        </button>
+      </nav>
+
+      <!-- decoracao -->
+      <div class="natureza-menu">
+        <div class="sol-menu"></div>
+
+        <div class="nuvem-menu">☁</div>
+
+        <div class="folha-menu">❧</div>
+      </div>
+
+      <!-- rodape -->
+      <footer class="rodape-menu">
+        <div class="status-online">
+          <span></span>
+
+          Sistema pronto
+        </div>
+
+        <small> AeroGrid Workspace </small>
+      </footer>
+    </aside>
+
+    <!-- conteudo principal -->
+    <main>
+      <!-- dashboard -->
+      <section id="dashboard">
+        <!-- topo -->
+        <header class="cabecalho-dashboard">
+          <div>
+            <p class="saudacao">Bem-vindo ao seu workspace</p>
+
+            <h2>Minhas planilhas</h2>
+
+            <p class="subtitulo">
+              Organize seus dados de forma simples e visual.
+            </p>
+          </div>
+
+          <button class="principal" onclick="abrirCriacao()">
+            ＋ Criar planilha
+          </button>
+        </header>
+
+        <!-- mensagem principal -->
+        <section class="banner">
+          <div class="banner-texto">
+            <span class="mini-etiqueta"> AeroGrid </span>
+
+            <h3>Seus dados podem ser simples.</h3>
+
+            <p>
+              Crie, personalize e exporte suas planilhas em poucos segundos.
+            </p>
+          </div>
+
+          <div class="banner-ilustracao">
+            <div class="sol"></div>
+
+            <div class="nuvem nuvem-1">☁</div>
+
+            <div class="nuvem nuvem-2">☁</div>
+
+            <div class="ilha">
+              <span>🌱</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- estatisticas -->
+        <article class="estatisticas">
+          <div>
+            <span class="icone-estatistica azul"> ▦ </span>
+
+            <section>
+              <p>Planilhas</p>
+
+              <strong id="totalPlanilhas"> 0 </strong>
+            </section>
+          </div>
+
+          <div>
+            <span class="icone-estatistica verde"> ◉ </span>
+
+            <section>
+              <p>Registros</p>
+
+              <strong id="totalRegistros"> 0 </strong>
+            </section>
+          </div>
+
+          <div>
+            <span class="icone-estatistica ciano"> ✦ </span>
+
+            <section>
+              <p>Campos</p>
+
+              <strong id="totalCampos"> 0 </strong>
+            </section>
+          </div>
+        </article>
+
+        <!-- lista -->
+        <section class="area-planilhas">
+          <div class="titulo-area">
+            <div>
+              <h3>Planilhas recentes</h3>
+
+              <p>Continue trabalhando nos seus arquivos.</p>
+            </div>
+          </div>
+
+          <div id="listaPlanilhas" class="lista-planilhas"></div>
+        </section>
+      </section>
+
+      <!-- editor -->
+      <section id="editor" class="escondido">
+        <!-- topo -->
+        <header class="cabecalho-editor">
+          <div class="informacoes-editor">
+            <button class="voltar" onclick="mostrarDashboard()">
+              ← Voltar
+            </button>
+
+            <div>
+              <p class="mini-texto">Editando planilha</p>
+
+              <input
+                id="nomePlanilhaEditor"
+                class="titulo-planilha"
+                onchange="alterarNomePlanilha()"
+              />
+
+              <p id="tipoPlanilha"></p>
+            </div>
+          </div>
+
+          <div class="acoes">
+            <button onclick="adicionarColuna()">＋ Campo</button>
+
+            <button onclick="adicionarLinha()">＋ Registro</button>
+
+            <button class="principal" onclick="exportarPlanilha()">
+              ↓ Exportar
+            </button>
+          </div>
+        </header>
+
+        <!-- personalizacao -->
+        <section class="personalizacao">
+          <div class="titulo-personalizacao">
+            <div>
+              <span class="personalizacao-icone"> ✦ </span>
+
+              <div>
+                <h3>Personalização</h3>
+
+                <p>Escolha como sua planilha deve aparecer.</p>
+              </div>
+            </div>
+
+            <button onclick="restaurarPersonalizacao()">↻ Restaurar</button>
+          </div>
+
+          <!-- opcoes -->
+          <div class="opcoes-personalizacao">
+            <label>
+              Cabeçalho
+
+              <input
+                type="color"
+                id="corCabecalho"
+                value="#1597e5"
+                onchange="alterarPersonalizacao()"
+              />
+            </label>
+
+            <label>
+              Texto do cabeçalho
+
+              <input
+                type="color"
+                id="corTextoCabecalho"
+                value="#ffffff"
+                onchange="alterarPersonalizacao()"
+              />
+            </label>
+
+            <label>
+              Informações
+
+              <input
+                type="color"
+                id="corTexto"
+                value="#24435a"
+                onchange="alterarPersonalizacao()"
+              />
+            </label>
+
+            <label>
+              Fundo das células
+
+              <input
+                type="color"
+                id="corCelulas"
+                value="#ffffff"
+                onchange="alterarPersonalizacao()"
+              />
+            </label>
+
+            <label>
+              Bordas
+
+              <input
+                type="color"
+                id="corBorda"
+                value="#b7dce9"
+                onchange="alterarPersonalizacao()"
+              />
+            </label>
+
+            <label>
+              Visualização
+
+              <select id="estiloPlanilha" onchange="alterarPersonalizacao()">
+                <option value="grade">Grade</option>
+
+                <option value="tabela">Tabela</option>
+              </select>
+            </label>
+
+            <label>
+              Tamanho da fonte
+
+              <select id="tamanhoFonte" onchange="alterarPersonalizacao()">
+                <option value="12">Pequena</option>
+
+                <option value="14" selected>Normal</option>
+
+                <option value="16">Grande</option>
+
+                <option value="18">Muito grande</option>
+              </select>
+            </label>
+
+            <label>
+              Alinhamento
+
+              <select id="alinhamento" onchange="alterarPersonalizacao()">
+                <option value="left">Esquerda</option>
+
+                <option value="center">Centralizado</option>
+
+                <option value="right">Direita</option>
+              </select>
+            </label>
+          </div>
+        </section>
+
+        <!-- tabela -->
+        <div class="tabela-container">
+          <table id="tabelaPlanilha">
+            <thead>
+              <tr id="cabecalhoTabela"></tr>
+            </thead>
+
+            <tbody id="corpoTabela"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <!-- modal nova planilha -->
+    <dialog id="modalCriacao">
+      <form onsubmit="criarPlanilha(event)">
+        <div class="titulo-modal">
+          <div class="icone-modal">✦</div>
+
+          <div>
+            <h2>Nova planilha</h2>
+
+            <p>Comece criando os campos que precisa.</p>
+          </div>
+        </div>
+
+        <label>
+          Nome da planilha
+
+          <input
+            id="nomePlanilha"
+            placeholder="Ex: Cadastro de clientes"
+            required
+          />
+        </label>
+
+        <label>
+          Formato
+
+          <select id="tipoExportacao">
+            <option value="excel">Microsoft Excel</option>
+
+            <option value="google">Google Sheets</option>
+          </select>
+        </label>
+
+        <section class="area-campos-modal">
+          <h3>Campos da planilha</h3>
+
+          <p class="descricao">Exemplo: Nome, Idade, Telefone, Cidade...</p>
+
+          <div id="camposCriacao"></div>
+
+          <button
+            type="button"
+            class="secundario"
+            onclick="adicionarCampoCriacao()"
+          >
+            ＋ Adicionar campo
+          </button>
+        </section>
+
+        <footer>
+          <button type="button" class="cancelar" onclick="fecharCriacao()">
+            Cancelar
+          </button>
+
+          <button class="principal">Criar planilha</button>
+        </footer>
+      </form>
+    </dialog>
+
+    <!-- modal novo campo -->
+    <dialog id="modalCampo">
+      <form onsubmit="salvarNovaColuna(event)">
+        <div class="titulo-modal">
+          <div class="icone-modal">＋</div>
+
+          <div>
+            <h2>Novo campo</h2>
+
+            <p>Adicione uma nova coluna.</p>
+          </div>
+        </div>
+
+        <label>
+          Nome do campo
+
+          <input id="novoCampo" placeholder="Ex: Telefone" required />
+        </label>
+
+        <footer>
+          <button type="button" onclick="modalCampo.close()">Cancelar</button>
+
+          <button class="principal">Adicionar</button>
+        </footer>
+      </form>
+    </dialog>
+
+    <!-- javascript -->
+    <script src="script.js"></script>
+  </body>
+</html>
