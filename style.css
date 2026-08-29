@@ -1,14 +1,21 @@
-/* fonte arredondada e moderna */
+/*
+    pega uma fonte arredondada e moderna da internet
+*/
 @import url("https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap");
 
-/* tira configuracoes automaticas */
+/*
+    tira alguns espaços que o navegador coloca sozinho
+*/
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-/* cores principais */
+/*
+    aqui criamos nomes para as cores
+    assim fica mais fácil usar elas depois
+*/
 :root {
   --azul: #149bea;
   --azul-forte: #087cc6;
@@ -31,7 +38,9 @@
   --sombra: rgba(35, 127, 166, 0.13);
 }
 
-/* fundo do site */
+/*
+    visual geral da página
+*/
 body {
   min-height: 100vh;
 
@@ -41,12 +50,18 @@ body {
 
   color: var(--texto);
 
+  /*
+        cria um fundo que começa azul
+        e vai ficando esverdeado
+    */
   background: linear-gradient(180deg, #d9f4ff 0%, #effcff 35%, #f7fff3 100%);
 
   overflow-x: hidden;
 }
 
-/* brilho no fundo */
+/*
+    cria um brilho branco no fundo
+*/
 body::before {
   content: "";
 
@@ -69,7 +84,9 @@ body::before {
   pointer-events: none;
 }
 
-/* bolhas decorativas */
+/*
+    bolhas decorativas do site
+*/
 .bolha {
   position: fixed;
 
@@ -77,6 +94,9 @@ body::before {
 
   border: 1px solid rgba(255, 255, 255, 0.9);
 
+  /*
+        deixa a bolha parecendo transparente
+    */
   background: radial-gradient(
     circle at 30% 25%,
     rgba(255, 255, 255, 0.95),
@@ -91,6 +111,9 @@ body::before {
   z-index: 0;
 }
 
+/*
+    posição da primeira bolha
+*/
 .bolha-1 {
   width: 85px;
   height: 85px;
@@ -99,6 +122,9 @@ body::before {
   top: 13%;
 }
 
+/*
+    posição da segunda bolha
+*/
 .bolha-2 {
   width: 35px;
   height: 35px;
@@ -107,6 +133,9 @@ body::before {
   top: 28%;
 }
 
+/*
+    posição da terceira bolha
+*/
 .bolha-3 {
   width: 55px;
   height: 55px;
@@ -115,7 +144,9 @@ body::before {
   bottom: 8%;
 }
 
-/* menu lateral */
+/*
+    menu lateral
+*/
 aside {
   width: 245px;
 
@@ -132,12 +163,18 @@ aside {
 
   flex-direction: column;
 
+  /*
+        fundo branco meio transparente
+    */
   background: linear-gradient(
     180deg,
     rgba(255, 255, 255, 0.85),
     rgba(235, 251, 255, 0.82)
   );
 
+  /*
+        deixa o fundo atrás meio borrado
+    */
   backdrop-filter: blur(20px);
 
   border-right: 1px solid rgba(255, 255, 255, 0.9);
@@ -147,7 +184,9 @@ aside {
   z-index: 20;
 }
 
-/* marca */
+/*
+    área da logo
+*/
 .marca {
   display: flex;
 
@@ -160,7 +199,9 @@ aside {
   margin-bottom: 38px;
 }
 
-/* logo */
+/*
+    quadradinho da logo
+*/
 .logo-aerogrid {
   width: 48px;
   height: 48px;
@@ -186,7 +227,9 @@ aside {
     inset 0 3px 7px rgba(255, 255, 255, 0.35);
 }
 
-/* nome */
+/*
+    nome do sistema
+*/
 .marca h1 {
   color: #197faf;
 
@@ -197,14 +240,18 @@ aside {
   letter-spacing: -0.5px;
 }
 
-/* frase da marca */
+/*
+    frase pequena da marca
+*/
 .marca p {
   color: #87a5b2;
 
   font-size: 9px;
 }
 
-/* navegacao */
+/*
+    menu de navegação
+*/
 nav {
   display: flex;
 
@@ -213,7 +260,9 @@ nav {
   gap: 9px;
 }
 
-/* botoes menu */
+/*
+    botões do menu
+*/
 nav button {
   display: flex;
 
@@ -242,7 +291,9 @@ nav button {
   transition: 0.2s;
 }
 
-/* icone */
+/*
+    quadradinho do ícone do menu
+*/
 .icone-menu {
   width: 30px;
   height: 30px;
@@ -262,7 +313,9 @@ nav button {
   font-size: 17px;
 }
 
-/* hover menu */
+/*
+    quando passa o mouse no botão
+*/
 nav button:hover {
   color: #087ebc;
 
@@ -279,7 +332,24 @@ nav button:hover {
   transform: translateX(3px);
 }
 
-/* decoracao menu */
+/*
+    mostra qual item do menu está selecionado
+*/
+.menu-ativo {
+  color: #087ebc;
+
+  border-color: #c8ebf8;
+
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.95),
+    rgba(223, 248, 255, 0.9)
+  );
+}
+
+/*
+    área de decoração do menu
+*/
 .natureza-menu {
   position: relative;
 
@@ -288,7 +358,9 @@ nav button:hover {
   overflow: hidden;
 }
 
-/* sol */
+/*
+    sol pequeno do menu
+*/
 .sol-menu {
   width: 58px;
   height: 58px;
@@ -305,7 +377,9 @@ nav button:hover {
   box-shadow: 0 0 30px rgba(255, 212, 53, 0.3);
 }
 
-/* nuvem */
+/*
+    nuvem do menu
+*/
 .nuvem-menu {
   position: absolute;
 
@@ -319,7 +393,9 @@ nav button:hover {
   text-shadow: 0 5px 15px rgba(70, 151, 183, 0.15);
 }
 
-/* folha */
+/*
+    folha decorativa
+*/
 .folha-menu {
   position: absolute;
 
@@ -333,7 +409,9 @@ nav button:hover {
   transform: rotate(-15deg);
 }
 
-/* rodape menu */
+/*
+    rodapé do menu lateral
+*/
 .rodape-menu {
   display: flex;
 
@@ -344,7 +422,9 @@ nav button:hover {
   padding: 12px;
 }
 
-/* status */
+/*
+    texto de sistema funcionando
+*/
 .status-online {
   display: flex;
 
@@ -359,7 +439,9 @@ nav button:hover {
   font-weight: 700;
 }
 
-/* bolinha verde */
+/*
+    bolinha verde do status
+*/
 .status-online span {
   width: 8px;
   height: 8px;
@@ -371,13 +453,18 @@ nav button:hover {
   box-shadow: 0 0 8px rgba(67, 205, 88, 0.7);
 }
 
+/*
+    texto pequeno do rodapé
+*/
 .rodape-menu small {
   color: #9ab1ba;
 
   font-size: 9px;
 }
 
-/* principal */
+/*
+    parte principal do site
+*/
 main {
   width: calc(100% - 245px);
 
@@ -392,9 +479,12 @@ main {
   z-index: 2;
 }
 
-/* painel principal */
+/*
+    caixa principal do dashboard e editor
+*/
 #dashboard,
-#editor {
+#editor,
+.pagina-sobre {
   width: 100%;
 
   max-width: 1400px;
@@ -420,12 +510,16 @@ main {
   box-shadow: 0 20px 55px rgba(58, 140, 170, 0.11);
 }
 
-/* esconder */
+/*
+    classe usada para esconder uma tela
+*/
 .escondido {
   display: none !important;
 }
 
-/* cabecalho */
+/*
+    cabeçalho do dashboard
+*/
 .cabecalho-dashboard {
   display: flex;
 
@@ -438,7 +532,9 @@ main {
   margin-bottom: 25px;
 }
 
-/* saudacao */
+/*
+    texto pequeno de boas-vindas
+*/
 .saudacao {
   color: #4baac8;
 
@@ -451,8 +547,11 @@ main {
   letter-spacing: 0.7px;
 }
 
-/* titulo dashboard */
-.cabecalho-dashboard h2 {
+/*
+    título do dashboard
+*/
+.cabecalho-dashboard h2,
+.cabecalho-sobre h2 {
   margin-top: 3px;
 
   color: #24495c;
@@ -462,7 +561,9 @@ main {
   font-weight: 800;
 }
 
-/* subtitulo */
+/*
+    texto pequeno abaixo do título
+*/
 .subtitulo {
   margin-top: 3px;
 
@@ -471,7 +572,9 @@ main {
   font-size: 13px;
 }
 
-/* todos os botoes */
+/*
+    visual normal dos botões
+*/
 button {
   font-family: inherit;
 
@@ -494,7 +597,9 @@ button {
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9);
 }
 
-/* hover */
+/*
+    quando passa o mouse no botão
+*/
 button:hover {
   color: #1984ba;
 
@@ -505,7 +610,9 @@ button:hover {
   transform: translateY(-1px);
 }
 
-/* principal */
+/*
+    botão azul principal
+*/
 .principal {
   border: 1px solid #0b92d6;
 
@@ -518,7 +625,9 @@ button:hover {
     inset 0 2px 2px rgba(255, 255, 255, 0.35);
 }
 
-/* hover principal */
+/*
+    efeito do botão azul
+*/
 .principal:hover {
   color: white;
 
@@ -527,7 +636,9 @@ button:hover {
   box-shadow: 0 10px 22px rgba(17, 142, 211, 0.28);
 }
 
-/* banner */
+/*
+    banner grande da página inicial
+*/
 .banner {
   min-height: 175px;
 
@@ -556,7 +667,9 @@ button:hover {
     0 9px 25px rgba(61, 166, 195, 0.12);
 }
 
-/* brilho */
+/*
+    brilho no banner
+*/
 .banner::after {
   content: "";
 
@@ -575,7 +688,9 @@ button:hover {
   filter: blur(10px);
 }
 
-/* texto banner */
+/*
+    texto do banner
+*/
 .banner-texto {
   position: relative;
 
@@ -584,7 +699,9 @@ button:hover {
   max-width: 520px;
 }
 
-/* etiqueta */
+/*
+    etiqueta pequena do banner
+*/
 .mini-etiqueta {
   display: inline-block;
 
@@ -605,7 +722,9 @@ button:hover {
   font-weight: 800;
 }
 
-/* titulo banner */
+/*
+    título do banner
+*/
 .banner h3 {
   color: #155b7b;
 
@@ -614,7 +733,9 @@ button:hover {
   margin-bottom: 6px;
 }
 
-/* texto banner */
+/*
+    texto do banner
+*/
 .banner p {
   color: #39768d;
 
@@ -623,7 +744,9 @@ button:hover {
   max-width: 410px;
 }
 
-/* ilustracao */
+/*
+    parte onde ficam sol, nuvem e ilha
+*/
 .banner-ilustracao {
   width: 290px;
 
@@ -632,7 +755,9 @@ button:hover {
   position: relative;
 }
 
-/* sol */
+/*
+    sol grande do banner
+*/
 .sol {
   width: 70px;
   height: 70px;
@@ -649,7 +774,9 @@ button:hover {
   box-shadow: 0 0 28px rgba(255, 219, 76, 0.45);
 }
 
-/* nuvens */
+/*
+    nuvens do banner
+*/
 .nuvem {
   position: absolute;
 
@@ -658,6 +785,9 @@ button:hover {
   text-shadow: 0 5px 15px rgba(48, 139, 177, 0.12);
 }
 
+/*
+    primeira nuvem
+*/
 .nuvem-1 {
   left: 10px;
   top: 18px;
@@ -665,6 +795,9 @@ button:hover {
   font-size: 64px;
 }
 
+/*
+    segunda nuvem
+*/
 .nuvem-2 {
   right: 70px;
   top: 53px;
@@ -672,7 +805,9 @@ button:hover {
   font-size: 44px;
 }
 
-/* ilha verde */
+/*
+    ilha verde
+*/
 .ilha {
   width: 180px;
   height: 45px;
@@ -695,13 +830,18 @@ button:hover {
   box-shadow: 0 10px 15px rgba(40, 131, 85, 0.15);
 }
 
+/*
+    plantinha da ilha
+*/
 .ilha span {
   font-size: 32px;
 
   transform: translateY(-17px);
 }
 
-/* cards numeros */
+/*
+    área dos três cards de números
+*/
 .estatisticas {
   display: grid;
 
@@ -712,7 +852,9 @@ button:hover {
   margin-bottom: 35px;
 }
 
-/* card */
+/*
+    cada card de número
+*/
 .estatisticas > div {
   min-height: 105px;
 
@@ -739,14 +881,18 @@ button:hover {
   transition: 0.2s;
 }
 
-/* hover card */
+/*
+    quando passa o mouse no card
+*/
 .estatisticas > div:hover {
   transform: translateY(-3px);
 
   box-shadow: 0 12px 26px rgba(55, 135, 164, 0.1);
 }
 
-/* icones */
+/*
+    ícones dos cards
+*/
 .icone-estatistica {
   width: 48px;
   height: 48px;
@@ -768,19 +914,30 @@ button:hover {
   box-shadow: inset 0 2px 2px rgba(255, 255, 255, 0.35);
 }
 
+/*
+    ícone azul
+*/
 .icone-estatistica.azul {
   background: linear-gradient(#5dcaff, #158fe0);
 }
 
+/*
+    ícone verde
+*/
 .icone-estatistica.verde {
   background: linear-gradient(#8ae56c, #42b94a);
 }
 
+/*
+    ícone ciano
+*/
 .icone-estatistica.ciano {
   background: linear-gradient(#5ee2df, #20b7c8);
 }
 
-/* texto estatistica */
+/*
+    texto pequeno do card
+*/
 .estatisticas section p {
   color: #7894a1;
 
@@ -789,19 +946,25 @@ button:hover {
   font-weight: 700;
 }
 
-/* numero */
+/*
+    número grande
+*/
 .estatisticas strong {
   color: #284b5e;
 
   font-size: 29px;
 }
 
-/* area planilhas */
+/*
+    área das planilhas
+*/
 .area-planilhas {
   margin-top: 8px;
 }
 
-/* titulo area */
+/*
+    título da área
+*/
 .titulo-area {
   display: flex;
 
@@ -816,12 +979,18 @@ button:hover {
   border-bottom: 1px solid #dceef4;
 }
 
+/*
+    título
+*/
 .titulo-area h3 {
   color: #31566a;
 
   font-size: 18px;
 }
 
+/*
+    descrição pequena
+*/
 .titulo-area p {
   color: #8aa1ab;
 
@@ -830,7 +999,9 @@ button:hover {
   margin-top: 2px;
 }
 
-/* grid cards */
+/*
+    grade dos cards de planilhas
+*/
 .lista-planilhas {
   display: grid;
 
@@ -839,7 +1010,9 @@ button:hover {
   gap: 15px;
 }
 
-/* card planilha */
+/*
+    card de uma planilha
+*/
 .card-planilha {
   position: relative;
 
@@ -860,7 +1033,9 @@ button:hover {
   box-shadow: 0 6px 18px rgba(44, 128, 159, 0.05);
 }
 
-/* faixa */
+/*
+    faixa colorida do lado do card
+*/
 .card-planilha::before {
   content: "";
 
@@ -875,7 +1050,9 @@ button:hover {
   background: linear-gradient(#27b6f2, #62d65c);
 }
 
-/* hover */
+/*
+    efeito quando passa o mouse
+*/
 .card-planilha:hover {
   transform: translateY(-3px);
 
@@ -884,7 +1061,9 @@ button:hover {
   box-shadow: 0 11px 27px rgba(44, 128, 159, 0.11);
 }
 
-/* nome */
+/*
+    nome da planilha
+*/
 .card-planilha h4 {
   margin-bottom: 7px;
 
@@ -893,7 +1072,9 @@ button:hover {
   font-size: 15px;
 }
 
-/* info */
+/*
+    informações da planilha
+*/
 .card-planilha p {
   margin-bottom: 15px;
 
@@ -902,7 +1083,9 @@ button:hover {
   font-size: 11px;
 }
 
-/* rodape */
+/*
+    parte de baixo do card
+*/
 .card-planilha footer {
   display: flex;
 
@@ -911,7 +1094,9 @@ button:hover {
   align-items: center;
 }
 
-/* etiqueta */
+/*
+    etiqueta excel ou google sheets
+*/
 .tag {
   padding: 5px 9px;
 
@@ -928,7 +1113,9 @@ button:hover {
   font-weight: 800;
 }
 
-/* excluir */
+/*
+    botão excluir
+*/
 .excluir {
   padding: 6px 9px;
 
@@ -939,7 +1126,9 @@ button:hover {
   background: #fff5f5;
 }
 
-/* editor */
+/*
+    cabeçalho do editor
+*/
 .cabecalho-editor {
   display: flex;
 
@@ -952,7 +1141,9 @@ button:hover {
   margin-bottom: 24px;
 }
 
-/* parte esquerda */
+/*
+    parte esquerda do editor
+*/
 .informacoes-editor {
   display: flex;
 
@@ -961,14 +1152,18 @@ button:hover {
   gap: 18px;
 }
 
-/* voltar */
+/*
+    botão voltar
+*/
 .voltar {
   color: #2786ad;
 
   background: #ecfaff;
 }
 
-/* mini texto */
+/*
+    texto pequeno acima do nome
+*/
 .mini-texto {
   color: #55a6c4;
 
@@ -981,7 +1176,9 @@ button:hover {
   letter-spacing: 0.5px;
 }
 
-/* nome planilha */
+/*
+    campo com o nome da planilha
+*/
 .titulo-planilha {
   display: block;
 
@@ -1002,14 +1199,18 @@ button:hover {
   font-weight: 800;
 }
 
-/* tipo */
+/*
+    texto mostrando excel ou google
+*/
 #tipoPlanilha {
   color: #8ba3ad;
 
   font-size: 11px;
 }
 
-/* acoes */
+/*
+    botões do editor
+*/
 .acoes {
   display: flex;
 
@@ -1018,7 +1219,9 @@ button:hover {
   flex-wrap: wrap;
 }
 
-/* personalizacao */
+/*
+    caixa de personalização
+*/
 .personalizacao {
   overflow: hidden;
 
@@ -1033,7 +1236,9 @@ button:hover {
   box-shadow: 0 7px 20px rgba(49, 136, 167, 0.06);
 }
 
-/* topo personalizacao */
+/*
+    topo da personalização
+*/
 .titulo-personalizacao {
   padding: 17px 19px;
 
@@ -1050,7 +1255,9 @@ button:hover {
   border-bottom: 1px solid #d1eaf1;
 }
 
-/* esquerda */
+/*
+    organiza o ícone e o texto
+*/
 .titulo-personalizacao > div {
   display: flex;
 
@@ -1059,7 +1266,9 @@ button:hover {
   gap: 10px;
 }
 
-/* icone */
+/*
+    ícone da personalização
+*/
 .personalizacao-icone {
   width: 36px;
   height: 36px;
@@ -1077,20 +1286,27 @@ button:hover {
   background: linear-gradient(#4bc9e7, #239acb);
 }
 
-/* titulo */
+/*
+    título
+*/
 .titulo-personalizacao h3 {
   color: #32677c;
 
   font-size: 15px;
 }
 
+/*
+    texto pequeno
+*/
 .titulo-personalizacao p {
   color: #80a0ac;
 
   font-size: 10px;
 }
 
-/* opcoes */
+/*
+    grade das opções de personalização
+*/
 .opcoes-personalizacao {
   padding: 17px;
 
@@ -1101,7 +1317,9 @@ button:hover {
   gap: 12px;
 }
 
-/* label */
+/*
+    texto de cada opção
+*/
 .opcoes-personalizacao label {
   display: flex;
 
@@ -1116,7 +1334,9 @@ button:hover {
   font-weight: 800;
 }
 
-/* select */
+/*
+    caixas de escolha
+*/
 .opcoes-personalizacao select {
   height: 36px;
 
@@ -1135,7 +1355,9 @@ button:hover {
   font-family: inherit;
 }
 
-/* cor */
+/*
+    seletor de cor
+*/
 .opcoes-personalizacao input[type="color"] {
   width: 48px;
   height: 36px;
@@ -1151,7 +1373,9 @@ button:hover {
   cursor: pointer;
 }
 
-/* caixa tabela */
+/*
+    caixa onde fica a tabela
+*/
 .tabela-container {
   overflow: auto;
 
@@ -1164,14 +1388,18 @@ button:hover {
   box-shadow: 0 8px 22px rgba(45, 131, 161, 0.06);
 }
 
-/* tabela */
+/*
+    tamanho da tabela
+*/
 table {
   width: 100%;
 
   min-width: 700px;
 }
 
-/* cabecalho */
+/*
+    títulos das colunas
+*/
 th {
   padding: 14px;
 
@@ -1180,12 +1408,16 @@ th {
   font-weight: 800;
 }
 
-/* celulas */
+/*
+    células
+*/
 td {
   padding: 0;
 }
 
-/* inputs */
+/*
+    campos onde o usuário escreve
+*/
 td input {
   width: 100%;
 
@@ -1200,31 +1432,42 @@ td input {
   background: transparent;
 }
 
-/* foco */
+/*
+    quando clica em uma célula
+*/
 td input:focus {
   background: #ecfbff !important;
 
   box-shadow: inset 0 0 0 2px #59bee4;
 }
 
-/* acoes */
+/*
+    coluna de ações
+*/
 .coluna-acoes {
   width: 80px;
 
   text-align: center;
 }
 
-/* grade */
+/*
+    modo grade
+*/
 .modo-grade {
   border-collapse: collapse;
 }
 
+/*
+    cria linhas em volta de tudo
+*/
 .modo-grade th,
 .modo-grade td {
   border: 1px solid #d2e9f0;
 }
 
-/* tabela */
+/*
+    modo tabela
+*/
 .modo-tabela {
   border-collapse: separate;
 
@@ -1233,29 +1476,43 @@ td input:focus {
   padding: 10px;
 }
 
+/*
+    tira bordas dos títulos
+*/
 .modo-tabela thead th {
   border: none;
 }
 
+/*
+    bordas das linhas
+*/
 .modo-tabela td {
   border-top: 1px solid #d2e9f0;
 
   border-bottom: 1px solid #d2e9f0;
 }
 
+/*
+    arredonda o lado esquerdo
+*/
 .modo-tabela td:first-child {
   border-left: 1px solid #d2e9f0;
 
   border-radius: 10px 0 0 10px;
 }
 
+/*
+    arredonda o lado direito
+*/
 .modo-tabela td:last-child {
   border-right: 1px solid #d2e9f0;
 
   border-radius: 0 10px 10px 0;
 }
 
-/* vazio */
+/*
+    mensagem de nenhuma planilha
+*/
 .vazio {
   grid-column: 1 / -1;
 
@@ -1272,7 +1529,9 @@ td input:focus {
   background: linear-gradient(135deg, #f5fdff, #f4fff0);
 }
 
-/* modais */
+/*
+    janelas de criar planilha e campo
+*/
 dialog {
   width: 500px;
 
@@ -1291,19 +1550,25 @@ dialog {
   box-shadow: 0 25px 70px rgba(31, 113, 145, 0.24);
 }
 
-/* fundo modal */
+/*
+    escurece o fundo quando abre a janela
+*/
 dialog::backdrop {
   background: rgba(25, 74, 93, 0.22);
 
   backdrop-filter: blur(4px);
 }
 
-/* dentro */
+/*
+    espaço dentro da janela
+*/
 dialog form {
   padding: 28px;
 }
 
-/* titulo modal */
+/*
+    topo da janela
+*/
 .titulo-modal {
   display: flex;
 
@@ -1314,7 +1579,9 @@ dialog form {
   margin-bottom: 23px;
 }
 
-/* icone modal */
+/*
+    ícone da janela
+*/
 .icone-modal {
   width: 42px;
   height: 42px;
@@ -1334,21 +1601,27 @@ dialog form {
   box-shadow: inset 0 2px 2px rgba(255, 255, 255, 0.4);
 }
 
-/* titulo */
+/*
+    título da janela
+*/
 .titulo-modal h2 {
   color: #31586b;
 
   font-size: 20px;
 }
 
-/* descricao */
+/*
+    descrição da janela
+*/
 .titulo-modal p {
   color: #88a2ad;
 
   font-size: 10px;
 }
 
-/* labels */
+/*
+    textos dos campos da janela
+*/
 dialog label {
   display: block;
 
@@ -1361,7 +1634,9 @@ dialog label {
   font-weight: 800;
 }
 
-/* inputs */
+/*
+    campos e seletores da janela
+*/
 dialog input,
 dialog select {
   display: block;
@@ -1385,7 +1660,9 @@ dialog select {
   font-family: inherit;
 }
 
-/* foco */
+/*
+    quando clica em um campo da janela
+*/
 dialog input:focus,
 dialog select:focus {
   border-color: #59bee4;
@@ -1393,18 +1670,25 @@ dialog select:focus {
   box-shadow: 0 0 0 3px rgba(80, 193, 231, 0.13);
 }
 
-/* area campos */
+/*
+    parte dos campos da criação
+*/
 .area-campos-modal {
   margin-top: 21px;
 }
 
+/*
+    título dos campos
+*/
 .area-campos-modal h3 {
   color: #41687a;
 
   font-size: 14px;
 }
 
-/* descricao */
+/*
+    texto de exemplo
+*/
 .descricao {
   margin: 4px 0 12px;
 
@@ -1413,7 +1697,9 @@ dialog select:focus {
   font-size: 10px;
 }
 
-/* campo dinamico */
+/*
+    cada campo criado
+*/
 .campo-criacao {
   display: flex;
 
@@ -1422,11 +1708,16 @@ dialog select:focus {
   margin-bottom: 8px;
 }
 
+/*
+    tira margem do input
+*/
 .campo-criacao input {
   margin: 0;
 }
 
-/* adicionar campo */
+/*
+    botão de adicionar campo
+*/
 .secundario {
   width: 100%;
 
@@ -1439,7 +1730,9 @@ dialog select:focus {
   background: #f4fcff;
 }
 
-/* footer modal */
+/*
+    botões da parte de baixo da janela
+*/
 dialog footer {
   display: flex;
 
@@ -1450,39 +1743,502 @@ dialog footer {
   margin-top: 23px;
 }
 
-/* cancelar */
+/*
+    botão cancelar
+*/
 .cancelar {
   color: #7a929b;
 }
 
-/* telas medias */
+/* ================================================= */
+/* PAGINA SOBRE */
+/* ================================================= */
+
+/*
+    cabeçalho da página sobre
+*/
+.cabecalho-sobre {
+  margin-bottom: 25px;
+}
+
+/*
+    banner da página sobre
+*/
+.banner-sobre {
+  position: relative;
+
+  overflow: hidden;
+
+  min-height: 210px;
+
+  padding: 35px;
+
+  margin-bottom: 25px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  border-radius: 22px;
+
+  border: 1px solid rgba(255, 255, 255, 0.95);
+
+  background: linear-gradient(125deg, #8edcff, #c6efff 55%, #c8f6ae);
+
+  box-shadow:
+    inset 0 3px 10px rgba(255, 255, 255, 0.5),
+    0 9px 25px rgba(61, 166, 195, 0.12);
+}
+
+/*
+    título do banner sobre
+*/
+.banner-sobre h3 {
+  max-width: 550px;
+
+  margin-bottom: 8px;
+
+  color: #155b7b;
+
+  font-size: 28px;
+}
+
+/*
+    texto do banner sobre
+*/
+.banner-sobre p {
+  max-width: 540px;
+
+  color: #39768d;
+
+  font-size: 14px;
+
+  line-height: 1.7;
+}
+
+/*
+    área decorativa do banner
+*/
+.ilustracao-sobre {
+  width: 280px;
+  height: 150px;
+
+  position: relative;
+}
+
+/*
+    quadrado com ícone de planilha
+*/
+.icone-planilha {
+  width: 85px;
+  height: 85px;
+
+  position: absolute;
+
+  right: 75px;
+  top: 25px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  border-radius: 24px;
+
+  color: white;
+
+  font-size: 42px;
+
+  background: linear-gradient(145deg, #51c7f5, #138bd1);
+
+  box-shadow:
+    0 15px 25px rgba(24, 134, 190, 0.25),
+    inset 0 3px 5px rgba(255, 255, 255, 0.35);
+}
+
+/*
+    plantinha decorativa
+*/
+.icone-folha {
+  position: absolute;
+
+  right: 28px;
+  bottom: 8px;
+
+  font-size: 43px;
+}
+
+/*
+    nuvem decorativa
+*/
+.icone-nuvem {
+  position: absolute;
+
+  left: 0;
+  top: 0;
+
+  color: white;
+
+  font-size: 65px;
+
+  text-shadow: 0 6px 15px rgba(45, 133, 169, 0.13);
+}
+
+/*
+    cards da página sobre
+*/
+.cards-sobre {
+  display: grid;
+
+  grid-template-columns: repeat(3, 1fr);
+
+  gap: 17px;
+
+  margin-bottom: 26px;
+}
+
+/*
+    cada card
+*/
+.card-sobre {
+  display: flex;
+
+  align-items: flex-start;
+
+  gap: 15px;
+
+  padding: 22px;
+
+  border: 1px solid #cfe9f1;
+
+  border-radius: 17px;
+
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.97),
+    rgba(244, 252, 255, 0.9)
+  );
+
+  box-shadow: 0 7px 20px rgba(44, 128, 159, 0.06);
+}
+
+/*
+    título do card
+*/
+.card-sobre h3 {
+  margin-bottom: 7px;
+
+  color: #31566a;
+
+  font-size: 16px;
+}
+
+/*
+    texto do card
+*/
+.card-sobre p {
+  color: #77929e;
+
+  font-size: 12px;
+
+  line-height: 1.7;
+}
+
+/*
+    ícone do card
+*/
+.icone-card-sobre {
+  min-width: 48px;
+  height: 48px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  border-radius: 15px;
+
+  color: white;
+
+  font-size: 21px;
+
+  background: linear-gradient(#59c9f5, #158fd8);
+}
+
+/*
+    versão verde do ícone
+*/
+.verde-card {
+  background: linear-gradient(#8be76d, #45b84c);
+}
+
+/*
+    versão ciano
+*/
+.ciano-card {
+  background: linear-gradient(#66e3df, #20b6c7);
+}
+
+/*
+    caixa explicando a ideia do projeto
+*/
+.objetivo-sobre {
+  padding: 26px;
+
+  margin-bottom: 27px;
+
+  border-radius: 20px;
+
+  border: 1px solid #cae8e4;
+
+  background: linear-gradient(135deg, #f5fdff, #f3ffeb);
+}
+
+/*
+    título dessa caixa
+*/
+.titulo-objetivo {
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+
+  margin-bottom: 15px;
+}
+
+/*
+    ícone da plantinha
+*/
+.titulo-objetivo > span {
+  width: 45px;
+  height: 45px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  border-radius: 14px;
+
+  background: white;
+
+  font-size: 23px;
+
+  box-shadow: 0 5px 15px rgba(63, 148, 137, 0.1);
+}
+
+/*
+    título da ideia
+*/
+.titulo-objetivo h3 {
+  color: #315e63;
+
+  font-size: 20px;
+}
+
+/*
+    parágrafos da ideia
+*/
+.objetivo-sobre > p {
+  max-width: 1000px;
+
+  margin-bottom: 12px;
+
+  color: #66878b;
+
+  font-size: 13px;
+
+  line-height: 1.8;
+}
+
+/*
+    área de recursos
+*/
+.recursos-sobre {
+  margin-bottom: 30px;
+}
+
+/*
+    grid dos recursos
+*/
+.lista-recursos {
+  display: grid;
+
+  grid-template-columns: repeat(4, 1fr);
+
+  gap: 14px;
+}
+
+/*
+    cada recurso
+*/
+.lista-recursos article {
+  padding: 20px;
+
+  border: 1px solid #d2e9f0;
+
+  border-radius: 16px;
+
+  background: rgba(255, 255, 255, 0.86);
+}
+
+/*
+    ícone do recurso
+*/
+.lista-recursos article > span {
+  width: 38px;
+  height: 38px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  margin-bottom: 12px;
+
+  border-radius: 12px;
+
+  color: #2089b8;
+
+  background: #e6f8ff;
+
+  font-size: 18px;
+
+  font-weight: 800;
+}
+
+/*
+    título do recurso
+*/
+.lista-recursos h4 {
+  margin-bottom: 6px;
+
+  color: #385f71;
+
+  font-size: 14px;
+}
+
+/*
+    texto do recurso
+*/
+.lista-recursos p {
+  color: #839da8;
+
+  font-size: 11px;
+
+  line-height: 1.6;
+}
+
+/*
+    parte final da página sobre
+*/
+.final-sobre {
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  gap: 20px;
+
+  padding-top: 22px;
+
+  border-top: 1px solid #dceef4;
+}
+
+/*
+    nome do sistema no final
+*/
+.final-sobre h3 {
+  color: #2582aa;
+
+  font-size: 20px;
+}
+
+/*
+    frase final
+*/
+.final-sobre p {
+  color: #8aa2ac;
+
+  font-size: 11px;
+}
+
+/* ================================================= */
+/* RESPONSIVIDADE */
+/* ================================================= */
+
+/*
+    quando a tela começa a ficar menor
+*/
 @media (max-width: 1150px) {
+  /*
+        deixa as opções de personalização em 4 colunas
+    */
   .opcoes-personalizacao {
     grid-template-columns: repeat(4, 1fr);
   }
+
+  /*
+        deixa os cards da página sobre um embaixo do outro
+    */
+  .cards-sobre {
+    grid-template-columns: 1fr;
+  }
+
+  /*
+        recursos ficam em 2 colunas
+    */
+  .lista-recursos {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
-/* celular */
+/*
+    estilo para celular
+*/
 @media (max-width: 800px) {
+  /*
+        menu fica pequeno
+    */
   aside {
     width: 72px;
 
     padding: 20px 8px;
   }
 
+  /*
+        centraliza a logo
+    */
   .marca {
     justify-content: center;
   }
 
+  /*
+        esconde o texto da logo
+    */
   .marca > div:last-child {
     display: none;
   }
 
+  /*
+        deixa a logo menor
+    */
   .logo-aerogrid {
     width: 46px;
     height: 46px;
   }
 
+  /*
+        deixa apenas os ícones do menu
+    */
   nav button {
     justify-content: center;
 
@@ -1491,15 +2247,24 @@ dialog footer {
     padding: 10px;
   }
 
+  /*
+        aumenta os ícones
+    */
   .icone-menu {
     font-size: 19px;
   }
 
+  /*
+        esconde decorações do menu
+    */
   .natureza-menu,
   .rodape-menu {
     display: none;
   }
 
+  /*
+        ajusta o conteúdo principal
+    */
   main {
     width: calc(100% - 72px);
 
@@ -1508,13 +2273,20 @@ dialog footer {
     padding: 14px;
   }
 
+  /*
+        diminui espaços das caixas
+    */
   #dashboard,
-  #editor {
+  #editor,
+  .pagina-sobre {
     min-height: calc(100vh - 28px);
 
     padding: 20px;
   }
 
+  /*
+        cabeçalhos ficam um embaixo do outro
+    */
   .cabecalho-dashboard,
   .cabecalho-editor {
     flex-direction: column;
@@ -1522,33 +2294,84 @@ dialog footer {
     align-items: flex-start;
   }
 
+  /*
+        banner fica menor
+    */
   .banner {
     min-height: 210px;
 
     padding: 22px;
   }
 
+  /*
+        esconde o desenho do banner
+        para não apertar o texto
+    */
   .banner-ilustracao {
     display: none;
   }
 
+  /*
+        estatísticas ficam uma embaixo da outra
+    */
   .estatisticas {
     grid-template-columns: 1fr;
   }
 
+  /*
+        personalização fica com 2 colunas
+    */
   .opcoes-personalizacao {
     grid-template-columns: repeat(2, 1fr);
   }
 
+  /*
+        topo do editor fica vertical
+    */
   .informacoes-editor {
     flex-direction: column;
 
     align-items: flex-start;
   }
 
+  /*
+        nome da planilha fica menor
+    */
   .titulo-planilha {
     max-width: 100%;
 
     font-size: 22px;
+  }
+
+  /*
+        banner da página sobre
+    */
+  .banner-sobre {
+    min-height: auto;
+
+    padding: 24px;
+  }
+
+  /*
+        esconde desenho da página sobre
+    */
+  .ilustracao-sobre {
+    display: none;
+  }
+
+  /*
+        recursos ficam um embaixo do outro
+    */
+  .lista-recursos {
+    grid-template-columns: 1fr;
+  }
+
+  /*
+        final da página sobre fica vertical
+    */
+  .final-sobre {
+    flex-direction: column;
+
+    align-items: flex-start;
   }
 }

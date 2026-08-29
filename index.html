@@ -1,36 +1,61 @@
 <!doctype html>
 <html lang="pt-BR">
   <head>
-    <!-- deixa os acentos funcionando -->
+    <!--
+        aqui a gente fala para o navegador
+        que o site usa português e pode usar acentos normalmente
+    -->
     <meta charset="UTF-8" />
 
-    <!-- deixa o site responsivo -->
+    <!--
+        faz o site se adaptar melhor em celular e tablet
+    -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- nome oficial -->
+    <!--
+        nome que aparece na aba do navegador
+    -->
     <title>AeroGrid</title>
 
-    <!-- css -->
+    <!--
+        chama o arquivo css que deixa o site bonito
+    -->
     <link rel="stylesheet" href="style.css" />
 
-    <!-- biblioteca que cria excel com estilos -->
+    <!--
+        biblioteca que cria arquivos excel
+        e permite levar as cores junto na exportação
+    -->
     <script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.min.js"></script>
   </head>
 
   <body>
-    <!-- bolhas decorativas -->
+    <!--
+        essas bolhas são só decoração
+        para deixar o site com cara de frutiger aero
+    -->
     <div class="bolha bolha-1"></div>
     <div class="bolha bolha-2"></div>
     <div class="bolha bolha-3"></div>
 
-    <!-- menu lateral -->
+    <!--
+        menu lateral do site
+    -->
     <aside>
-      <!-- logo -->
+      <!--
+            parte onde fica a logo e o nome do site
+        -->
       <div class="marca">
+        <!--
+                logo simples do aerogrid
+            -->
         <div class="logo-aerogrid">
-          <span>◉</span>
+          <span> ◉ </span>
         </div>
 
+        <!--
+                nome e frase pequena
+            -->
         <div>
           <h1>AeroGrid</h1>
 
@@ -38,32 +63,59 @@
         </div>
       </div>
 
-      <!-- navegacao -->
+      <!--
+            menu de navegação
+        -->
       <nav>
+        <!--
+                mostra a tela principal
+            -->
         <button onclick="mostrarDashboard()">
           <span class="icone-menu"> ⌂ </span>
 
           Dashboard
         </button>
 
+        <!--
+                abre a janela para criar uma nova planilha
+            -->
         <button onclick="abrirCriacao()">
           <span class="icone-menu"> ＋ </span>
 
           Nova planilha
         </button>
+
+        <!--
+                leva para a página sobre o projeto
+            -->
+        <button onclick="window.location.href = 'sobre.html'">
+          <span class="icone-menu"> ✦ </span>
+
+          Sobre
+        </button>
       </nav>
 
-      <!-- decoracao -->
+      <!--
+            decoração do menu
+        -->
       <div class="natureza-menu">
+        <!-- sol decorativo -->
         <div class="sol-menu"></div>
 
+        <!-- nuvem decorativa -->
         <div class="nuvem-menu">☁</div>
 
+        <!-- folha decorativa -->
         <div class="folha-menu">❧</div>
       </div>
 
-      <!-- rodape -->
+      <!--
+            parte de baixo do menu
+        -->
       <footer class="rodape-menu">
+        <!--
+                mostra que o sistema está funcionando
+            -->
         <div class="status-online">
           <span></span>
 
@@ -74,29 +126,46 @@
       </footer>
     </aside>
 
-    <!-- conteudo principal -->
+    <!--
+        parte principal do site
+    -->
     <main>
-      <!-- dashboard -->
+      <!--
+            tela inicial do sistema
+        -->
       <section id="dashboard">
-        <!-- topo -->
+        <!--
+                topo do dashboard
+            -->
         <header class="cabecalho-dashboard">
           <div>
+            <!-- texto pequeno -->
             <p class="saudacao">Bem-vindo ao seu workspace</p>
 
+            <!-- título principal -->
             <h2>Minhas planilhas</h2>
 
+            <!-- descrição -->
             <p class="subtitulo">
               Organize seus dados de forma simples e visual.
             </p>
           </div>
 
+          <!--
+                    cria uma nova planilha
+                -->
           <button class="principal" onclick="abrirCriacao()">
             ＋ Criar planilha
           </button>
         </header>
 
-        <!-- mensagem principal -->
+        <!--
+                banner principal decorativo
+            -->
         <section class="banner">
+          <!--
+                    texto do banner
+                -->
           <div class="banner-texto">
             <span class="mini-etiqueta"> AeroGrid </span>
 
@@ -107,21 +176,32 @@
             </p>
           </div>
 
+          <!--
+                    desenho do lado direito do banner
+                -->
           <div class="banner-ilustracao">
+            <!-- sol -->
             <div class="sol"></div>
 
+            <!-- nuvens -->
             <div class="nuvem nuvem-1">☁</div>
 
             <div class="nuvem nuvem-2">☁</div>
 
+            <!-- pequena ilha -->
             <div class="ilha">
-              <span>🌱</span>
+              <span> 🌱 </span>
             </div>
           </div>
         </section>
 
-        <!-- estatisticas -->
+        <!--
+                área com os números do sistema
+            -->
         <article class="estatisticas">
+          <!--
+                    quantidade de planilhas
+                -->
           <div>
             <span class="icone-estatistica azul"> ▦ </span>
 
@@ -132,6 +212,9 @@
             </section>
           </div>
 
+          <!--
+                    quantidade de registros
+                -->
           <div>
             <span class="icone-estatistica verde"> ◉ </span>
 
@@ -142,6 +225,9 @@
             </section>
           </div>
 
+          <!--
+                    quantidade de campos
+                -->
           <div>
             <span class="icone-estatistica ciano"> ✦ </span>
 
@@ -153,8 +239,13 @@
           </div>
         </article>
 
-        <!-- lista -->
+        <!--
+                área onde aparecem as planilhas criadas
+            -->
         <section class="area-planilhas">
+          <!--
+                    título da parte das planilhas
+                -->
           <div class="titulo-area">
             <div>
               <h3>Planilhas recentes</h3>
@@ -163,47 +254,79 @@
             </div>
           </div>
 
+          <!--
+                    o javascript coloca os cards das planilhas aqui
+                -->
           <div id="listaPlanilhas" class="lista-planilhas"></div>
         </section>
       </section>
 
-      <!-- editor -->
+      <!--
+            tela onde a planilha é editada
+        -->
       <section id="editor" class="escondido">
-        <!-- topo -->
+        <!--
+                topo do editor
+            -->
         <header class="cabecalho-editor">
           <div class="informacoes-editor">
+            <!--
+                        volta para o dashboard
+                    -->
             <button class="voltar" onclick="mostrarDashboard()">
               ← Voltar
             </button>
 
+            <!--
+                        nome e tipo da planilha
+                    -->
             <div>
               <p class="mini-texto">Editando planilha</p>
 
+              <!--
+                            aqui aparece o nome da planilha
+                            e também dá para alterar
+                        -->
               <input
                 id="nomePlanilhaEditor"
                 class="titulo-planilha"
                 onchange="alterarNomePlanilha()"
               />
 
+              <!--
+                            mostra se é excel ou google sheets
+                        -->
               <p id="tipoPlanilha"></p>
             </div>
           </div>
 
+          <!--
+                    botões principais do editor
+                -->
           <div class="acoes">
+            <!-- cria uma coluna nova -->
             <button onclick="adicionarColuna()">＋ Campo</button>
 
+            <!-- cria uma linha nova -->
             <button onclick="adicionarLinha()">＋ Registro</button>
 
+            <!-- exporta a planilha -->
             <button class="principal" onclick="exportarPlanilha()">
               ↓ Exportar
             </button>
           </div>
         </header>
 
-        <!-- personalizacao -->
+        <!--
+                parte onde o usuário muda cores e estilo
+            -->
         <section class="personalizacao">
+          <!--
+                    topo da área de personalização
+                -->
           <div class="titulo-personalizacao">
             <div>
+              <!-- ícone decorativo -->
               <span class="personalizacao-icone"> ✦ </span>
 
               <div>
@@ -213,11 +336,17 @@
               </div>
             </div>
 
+            <!--
+                        volta para as cores normais
+                    -->
             <button onclick="restaurarPersonalizacao()">↻ Restaurar</button>
           </div>
 
-          <!-- opcoes -->
+          <!--
+                    opções de visual
+                -->
           <div class="opcoes-personalizacao">
+            <!-- cor de fundo do cabeçalho -->
             <label>
               Cabeçalho
 
@@ -229,6 +358,7 @@
               />
             </label>
 
+            <!-- cor da letra do cabeçalho -->
             <label>
               Texto do cabeçalho
 
@@ -240,6 +370,7 @@
               />
             </label>
 
+            <!-- cor do texto das células -->
             <label>
               Informações
 
@@ -251,6 +382,7 @@
               />
             </label>
 
+            <!-- cor do fundo das células -->
             <label>
               Fundo das células
 
@@ -262,6 +394,7 @@
               />
             </label>
 
+            <!-- cor das bordas -->
             <label>
               Bordas
 
@@ -273,6 +406,7 @@
               />
             </label>
 
+            <!-- muda entre grade ou tabela -->
             <label>
               Visualização
 
@@ -283,6 +417,7 @@
               </select>
             </label>
 
+            <!-- tamanho das letras -->
             <label>
               Tamanho da fonte
 
@@ -297,6 +432,7 @@
               </select>
             </label>
 
+            <!-- posição do texto -->
             <label>
               Alinhamento
 
@@ -311,22 +447,39 @@
           </div>
         </section>
 
-        <!-- tabela -->
+        <!--
+                tabela da planilha
+            -->
         <div class="tabela-container">
           <table id="tabelaPlanilha">
             <thead>
+              <!--
+                            o javascript cria os nomes das colunas aqui
+                        -->
               <tr id="cabecalhoTabela"></tr>
             </thead>
 
+            <!--
+                        o javascript cria os registros aqui
+                    -->
             <tbody id="corpoTabela"></tbody>
           </table>
         </div>
       </section>
     </main>
 
-    <!-- modal nova planilha -->
+    <!--
+        janela para criar uma nova planilha
+    -->
     <dialog id="modalCriacao">
+      <!--
+            quando o usuário envia o formulário,
+            o javascript cria a planilha
+        -->
       <form onsubmit="criarPlanilha(event)">
+        <!--
+                topo da janela
+            -->
         <div class="titulo-modal">
           <div class="icone-modal">✦</div>
 
@@ -337,6 +490,9 @@
           </div>
         </div>
 
+        <!--
+                nome da planilha
+            -->
         <label>
           Nome da planilha
 
@@ -347,6 +503,9 @@
           />
         </label>
 
+        <!--
+                escolhe o formato
+            -->
         <label>
           Formato
 
@@ -357,13 +516,22 @@
           </select>
         </label>
 
+        <!--
+                área onde cria os campos
+            -->
         <section class="area-campos-modal">
           <h3>Campos da planilha</h3>
 
           <p class="descricao">Exemplo: Nome, Idade, Telefone, Cidade...</p>
 
+          <!--
+                    o javascript coloca os campos aqui
+                -->
           <div id="camposCriacao"></div>
 
+          <!--
+                    adiciona outro campo
+                -->
           <button
             type="button"
             class="secundario"
@@ -373,19 +541,27 @@
           </button>
         </section>
 
+        <!--
+                botões da janela
+            -->
         <footer>
+          <!-- fecha a janela -->
           <button type="button" class="cancelar" onclick="fecharCriacao()">
             Cancelar
           </button>
 
+          <!-- cria a planilha -->
           <button class="principal">Criar planilha</button>
         </footer>
       </form>
     </dialog>
 
-    <!-- modal novo campo -->
+    <!--
+        janela usada para criar uma coluna nova
+    -->
     <dialog id="modalCampo">
       <form onsubmit="salvarNovaColuna(event)">
+        <!-- título -->
         <div class="titulo-modal">
           <div class="icone-modal">＋</div>
 
@@ -396,21 +572,31 @@
           </div>
         </div>
 
+        <!--
+                nome da nova coluna
+            -->
         <label>
           Nome do campo
 
           <input id="novoCampo" placeholder="Ex: Telefone" required />
         </label>
 
+        <!--
+                botões
+            -->
         <footer>
+          <!-- fecha a janela -->
           <button type="button" onclick="modalCampo.close()">Cancelar</button>
 
+          <!-- salva a coluna -->
           <button class="principal">Adicionar</button>
         </footer>
       </form>
     </dialog>
 
-    <!-- javascript -->
+    <!--
+        chama o javascript que faz o sistema funcionar
+    -->
     <script src="script.js"></script>
   </body>
 </html>

@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <!--
+        permite usar acentos normalmente
+    -->
+    <meta charset="UTF-8" />
+
+    <!--
+        deixa a página funcionar melhor em celular
+    -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!--
+        nome da aba
+    -->
+    <title>Sobre - AeroGrid</title>
+
+    <!--
+        usa o mesmo css do site principal
+    -->
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+    <!--
+        bolhas decorativas do fundo
+    -->
+    <div class="bolha bolha-1"></div>
+    <div class="bolha bolha-2"></div>
+    <div class="bolha bolha-3"></div>
+
+    <!--
+        menu lateral
+    -->
+    <aside>
+      <!--
+            logo e nome do sistema
+        -->
+      <div class="marca">
+        <div class="logo-aerogrid">
+          <span> ◉ </span>
+        </div>
+
+        <div>
+          <h1>AeroGrid</h1>
+
+          <p>organize. visualize. respire.</p>
+        </div>
+      </div>
+
+      <!--
+            menu
+        -->
+      <nav>
+        <!--
+                volta para o index
+            -->
+        <button onclick="window.location.href = 'index.html'">
+          <span class="icone-menu"> ⌂ </span>
+
+          Dashboard
+        </button>
+
+        <!--
+                também volta para o index e já pode criar
+                depois pelo botão de nova planilha
+            -->
+        <button onclick="window.location.href = 'index.html'">
+          <span class="icone-menu"> ＋ </span>
+
+          Nova planilha
+        </button>
+
+        <!--
+                mostra que estamos na página sobre
+            -->
+        <button class="menu-ativo">
+          <span class="icone-menu"> ✦ </span>
+
+          Sobre
+        </button>
+      </nav>
+
+      <!--
+            decoração do menu
+        -->
+      <div class="natureza-menu">
+        <div class="sol-menu"></div>
+
+        <div class="nuvem-menu">☁</div>
+
+        <div class="folha-menu">❧</div>
+      </div>
+
+      <!--
+            parte de baixo do menu
+        -->
+      <footer class="rodape-menu">
+        <div class="status-online">
+          <span></span>
+
+          Sistema pronto
+        </div>
+
+        <small> AeroGrid Workspace </small>
+      </footer>
+    </aside>
+
+    <!--
+        conteúdo principal
+    -->
+    <main>
+      <!--
+            caixa principal da página sobre
+        -->
+      <section class="pagina-sobre">
+        <!--
+                começo da página
+            -->
+        <header class="cabecalho-sobre">
+          <div>
+            <p class="saudacao">Conheça o projeto</p>
+
+            <h2>Sobre o AeroGrid</h2>
+
+            <p class="subtitulo">
+              Uma forma simples de criar e organizar planilhas.
+            </p>
+          </div>
+        </header>
+
+        <!--
+                banner principal
+            -->
+        <section class="banner-sobre">
+          <div>
+            <!-- pequena etiqueta -->
+            <span class="mini-etiqueta"> AeroGrid </span>
+
+            <!-- frase principal -->
+            <h3>Planilhas não precisam ser complicadas.</h3>
+
+            <!-- explicação curta -->
+            <p>
+              O AeroGrid foi criado para deixar a criação de planilhas mais
+              rápida, simples e agradável.
+            </p>
+          </div>
+
+          <!--
+                    desenho decorativo
+                -->
+          <div class="ilustracao-sobre">
+            <!-- ícone da planilha -->
+            <span class="icone-planilha"> ▦ </span>
+
+            <!-- plantinha -->
+            <span class="icone-folha"> 🌱 </span>
+
+            <!-- nuvem -->
+            <span class="icone-nuvem"> ☁ </span>
+          </div>
+        </section>
+
+        <!--
+                três cards explicando o projeto
+            -->
+        <section class="cards-sobre">
+          <!--
+                    card sobre quem criou
+                -->
+          <article class="card-sobre">
+            <div class="icone-card-sobre">👨‍💻</div>
+
+            <div>
+              <h3>Quem criou?</h3>
+
+              <p>
+                O AeroGrid foi criado por
+                <strong>Gabriel</strong>
+                como um projeto pensado para facilitar a criação e a organização
+                de planilhas.
+              </p>
+            </div>
+          </article>
+
+          <!--
+                    card sobre o objetivo
+                -->
+          <article class="card-sobre">
+            <div class="icone-card-sobre verde-card">✦</div>
+
+            <div>
+              <h3>Qual é o objetivo?</h3>
+
+              <p>
+                O principal objetivo do AeroGrid é permitir que qualquer pessoa
+                consiga criar uma planilha de forma mais simples, sem precisar
+                começar tudo do zero.
+              </p>
+            </div>
+          </article>
+
+          <!--
+                    card explicando como funciona
+                -->
+          <article class="card-sobre">
+            <div class="icone-card-sobre ciano-card">▦</div>
+
+            <div>
+              <h3>Como funciona?</h3>
+
+              <p>
+                O usuário cria uma planilha, escolhe os campos, adiciona
+                registros, personaliza o visual e depois pode exportar o
+                arquivo.
+              </p>
+            </div>
+          </article>
+        </section>
+
+        <!--
+                parte explicando melhor a ideia do projeto
+            -->
+        <section class="objetivo-sobre">
+          <!-- título -->
+          <div class="titulo-objetivo">
+            <span> 🌱 </span>
+
+            <div>
+              <p class="saudacao">Ideia do projeto</p>
+
+              <h3>Facilitar o dia a dia</h3>
+            </div>
+          </div>
+
+          <!--
+                    primeiro parágrafo
+                -->
+          <p>
+            Muitas pessoas precisam criar planilhas para organizar informações,
+            mas nem sempre sabem como começar. O AeroGrid busca facilitar esse
+            processo oferecendo uma interface simples e visual.
+          </p>
+
+          <!--
+                    segundo parágrafo
+                -->
+          <p>
+            A ideia é permitir que o usuário escolha os campos que precisa,
+            preencha suas informações e monte sua planilha sem precisar criar
+            toda a estrutura manualmente.
+          </p>
+
+          <!--
+                    terceiro parágrafo
+                -->
+          <p>
+            Depois de organizar tudo dentro do AeroGrid, a planilha pode ser
+            exportada para
+            <strong>Microsoft Excel</strong>
+            ou usada no
+            <strong>Google Sheets</strong>.
+          </p>
+        </section>
+
+        <!--
+                parte mostrando as funções do sistema
+            -->
+        <section class="recursos-sobre">
+          <!-- título -->
+          <div class="titulo-area">
+            <div>
+              <h3>O que o AeroGrid permite fazer?</h3>
+
+              <p>Algumas das principais funções do sistema.</p>
+            </div>
+          </div>
+
+          <!--
+                    lista dos recursos
+                -->
+          <div class="lista-recursos">
+            <!-- criar planilha -->
+            <article>
+              <span> ＋ </span>
+
+              <h4>Criar planilhas</h4>
+
+              <p>
+                Monte uma nova planilha escolhendo os campos que você precisa.
+              </p>
+            </article>
+
+            <!-- editar -->
+            <article>
+              <span> ✎ </span>
+
+              <h4>Editar informações</h4>
+
+              <p>Adicione e altere registros diretamente pelo navegador.</p>
+            </article>
+
+            <!-- personalizar -->
+            <article>
+              <span> ◉ </span>
+
+              <h4>Personalizar</h4>
+
+              <p>
+                Escolha cores, tamanho de fonte, alinhamento e estilo da tabela.
+              </p>
+            </article>
+
+            <!-- exportar -->
+            <article>
+              <span> ↓ </span>
+
+              <h4>Exportar</h4>
+
+              <p>
+                Baixe sua planilha pronta em formato compatível com Excel e
+                Google Sheets.
+              </p>
+            </article>
+          </div>
+        </section>
+
+        <!--
+                parte final
+            -->
+        <footer class="final-sobre">
+          <div>
+            <h3>AeroGrid</h3>
+
+            <p>Criado para deixar planilhas mais simples.</p>
+          </div>
+
+          <!--
+                    botão para voltar
+                -->
+          <button
+            class="principal"
+            onclick="window.location.href = 'index.html'"
+          >
+            ← Voltar ao sistema
+          </button>
+        </footer>
+      </section>
+    </main>
+  </body>
+</html>
