@@ -1,48 +1,19 @@
 <!doctype html>
 <html lang="pt-BR">
   <head>
-    <!--
-        CONFIGURAÇÕES BÁSICAS DA PÁGINA
-
-        charset permite usar acentos normalmente.
-        viewport faz o site se adaptar melhor em celular e tablet.
-    -->
+    <!-- configurações básicas -->
     <meta charset="UTF-8" />
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-    <!-- nome que aparece na aba do navegador -->
     <title>AeroGrid</title>
 
-    <!--
-        chama o arquivo responsável
-        por todo o visual do site
-    -->
+    <!-- visual do sistema -->
     <link rel="stylesheet" href="style.css" />
 
-    <!--
-        BIBLIOTECA DO EXCEL
-
-        essa biblioteca permite transformar
-        os dados do site em um arquivo .xlsx.
-
-        estamos usando xlsx-js-style porque ela
-        também consegue exportar cores e estilos.
-    -->
+    <!-- biblioteca usada para exportar .xlsx com estilos e fórmulas -->
     <script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.min.js"></script>
   </head>
-
   <body>
-    <!-- ================================================= -->
-    <!-- DECORAÇÕES DO FUNDO -->
-    <!-- ================================================= -->
-
-    <!--
-        essas bolhas não possuem função no sistema.
-
-        servem apenas para ajudar a criar
-        a aparência Frutiger Aero.
-    -->
+    <!-- decoração discreta do fundo -->
     <div class="bolha bolha-1"></div>
     <div class="bolha bolha-2"></div>
     <div class="bolha bolha-3"></div>
@@ -50,371 +21,220 @@
     <!-- ================================================= -->
     <!-- MENU LATERAL -->
     <!-- ================================================= -->
-
-    <!--
-        aside representa o menu lateral.
-
-        aqui ficam:
-        - logo
-        - dashboard
-        - nova planilha
-        - sobre
-        - decorações
-    -->
     <aside>
-      <!-- ================================================= -->
-      <!-- LOGO -->
-      <!-- ================================================= -->
-
       <div class="marca">
-        <!-- símbolo da logo -->
-        <div class="logo-aerogrid">
-          <span> ◉ </span>
-        </div>
-
-        <!-- nome e pequena frase -->
-        <div class="marca-texto">
+        <div class="logo-aerogrid"><span>◉</span></div>
+        <div>
           <h1>AeroGrid</h1>
-
           <p>organize. visualize. respire.</p>
         </div>
       </div>
 
-      <!-- ================================================= -->
-      <!-- NAVEGAÇÃO -->
-      <!-- ================================================= -->
-
       <nav>
-        <!--
-                mostra novamente o dashboard
-                sem precisar atualizar a página
-            -->
         <button onclick="mostrarDashboard()">
-          <span class="icone-menu"> ⌂ </span>
-
-          <span class="texto-menu"> Dashboard </span>
+          <span class="icone-menu">⌂</span>
+          <span class="texto-menu" data-i18n="nav.dashboard">Dashboard</span>
         </button>
 
-        <!--
-                abre a janela onde o usuário
-                cria uma planilha nova
-            -->
         <button onclick="abrirCriacao()">
-          <span class="icone-menu"> ＋ </span>
-
-          <span class="texto-menu"> Nova planilha </span>
+          <span class="icone-menu">＋</span>
+          <span class="texto-menu" data-i18n="nav.new">Nova planilha</span>
         </button>
 
-        <!--
-                leva para a página sobre.html
-            -->
-        <button onclick="window.location.href = 'sobre.html'">
-          <span class="icone-menu"> ✦ </span>
+        <!-- nova aba de configurações -->
+        <button onclick="mostrarConfiguracoes()">
+          <span class="icone-menu">⚙</span>
+          <span class="texto-menu" data-i18n="nav.settings">Configurações</span>
+        </button>
 
-          <span class="texto-menu"> Sobre </span>
+        <button onclick="window.location.href = 'sobre.html'">
+          <span class="icone-menu">✦</span>
+          <span class="texto-menu" data-i18n="nav.about">Sobre</span>
         </button>
       </nav>
 
-      <!-- ================================================= -->
-      <!-- DECORAÇÃO LATERAL -->
-      <!-- ================================================= -->
-
-      <!--
-            elementos decorativos usados
-            para reforçar o tema Frutiger Aero
-        -->
       <div class="natureza-menu">
         <div class="sol-menu"></div>
-
-        <div class="nuvem-menu">☁</div>
-
         <div class="folha-menu">❧</div>
       </div>
 
-      <!-- ================================================= -->
-      <!-- RODAPÉ DO MENU -->
-      <!-- ================================================= -->
-
       <footer class="rodape-menu">
-        <!--
-                apenas mostra visualmente
-                que o sistema está funcionando
-            -->
         <div class="status-online">
           <span></span>
-
-          Sistema pronto
+          <span data-i18n="status.ready">Sistema pronto</span>
         </div>
-
-        <small> AeroGrid Workspace </small>
+        <small>AeroGrid Workspace</small>
       </footer>
     </aside>
 
     <!-- ================================================= -->
     <!-- CONTEÚDO PRINCIPAL -->
     <!-- ================================================= -->
-
     <main>
       <!-- ================================================= -->
       <!-- DASHBOARD -->
       <!-- ================================================= -->
-
-      <!--
-            essa é a primeira tela do sistema.
-
-            nela aparecem:
-            - informações gerais
-            - estatísticas
-            - planilhas já criadas
-        -->
       <section id="dashboard">
-        <!-- ================================================= -->
-        <!-- CABEÇALHO -->
-        <!-- ================================================= -->
-
         <header class="cabecalho-dashboard">
           <div>
-            <p class="saudacao">Bem-vindo ao seu workspace</p>
-
-            <h2>Minhas planilhas</h2>
-
-            <p class="subtitulo">
+            <p class="saudacao" data-i18n="dashboard.welcome">
+              Bem-vindo ao seu workspace
+            </p>
+            <h2 data-i18n="dashboard.title">Minhas planilhas</h2>
+            <p class="subtitulo" data-i18n="dashboard.subtitle">
               Crie do zero ou comece usando um modelo pronto.
             </p>
           </div>
 
-          <!--
-                    outro botão para abrir
-                    a criação de planilhas
-                -->
-          <button class="principal" onclick="abrirCriacao()">
+          <button
+            class="principal"
+            onclick="abrirCriacao()"
+            data-i18n="dashboard.create"
+          >
             ＋ Criar planilha
           </button>
         </header>
 
-        <!-- ================================================= -->
-        <!-- BANNER -->
-        <!-- ================================================= -->
-
-        <!--
-                banner principal.
-
-                ele não possui função no sistema,
-                serve para apresentar a proposta do AeroGrid.
-            -->
         <section class="banner">
           <div class="banner-texto">
-            <span class="mini-etiqueta"> AeroGrid </span>
-
-            <h3>Seus dados podem ser simples.</h3>
-
-            <p>
-              Use modelos inteligentes com cálculos automáticos ou monte sua
-              própria planilha.
+            <span class="mini-etiqueta">AeroGrid</span>
+            <h3 data-i18n="banner.title">
+              Planilhas inteligentes, sem complicação.
+            </h3>
+            <p data-i18n="banner.text">
+              Use modelos com cálculos automáticos ou crie sua própria
+              estrutura.
             </p>
           </div>
 
-          <!-- decoração do banner -->
           <div class="banner-ilustracao">
-            <div class="sol"></div>
-
-            <div class="nuvem nuvem-1">☁</div>
-
-            <div class="nuvem nuvem-2">☁</div>
-
-            <div class="ilha">
-              <span> 🌱 </span>
-            </div>
+            <div class="orbita orbita-1"></div>
+            <div class="orbita orbita-2"></div>
+            <div class="icone-banner">▦</div>
           </div>
         </section>
 
-        <!-- ================================================= -->
-        <!-- ESTATÍSTICAS -->
-        <!-- ================================================= -->
-
-        <!--
-                esses três cards são atualizados pelo JavaScript.
-
-                eles mostram:
-                - quantidade de planilhas
-                - quantidade de registros
-                - quantidade de campos
-            -->
+        <!-- números gerais do sistema -->
         <article class="estatisticas">
-          <!-- total de planilhas -->
           <div>
-            <span class="icone-estatistica azul"> ▦ </span>
-
+            <span class="icone-estatistica azul">▦</span>
             <section>
-              <p>Planilhas</p>
-
-              <!--
-                            o JavaScript muda esse número
-                        -->
-              <strong id="totalPlanilhas"> 0 </strong>
+              <p data-i18n="stats.sheets">Planilhas</p>
+              <strong id="totalPlanilhas">0</strong>
             </section>
           </div>
 
-          <!-- total de registros -->
           <div>
-            <span class="icone-estatistica verde"> ◉ </span>
-
+            <span class="icone-estatistica verde">◉</span>
             <section>
-              <p>Registros</p>
-
-              <strong id="totalRegistros"> 0 </strong>
+              <p data-i18n="stats.records">Registros</p>
+              <strong id="totalRegistros">0</strong>
             </section>
           </div>
 
-          <!-- total de campos -->
           <div>
-            <span class="icone-estatistica ciano"> ✦ </span>
-
+            <span class="icone-estatistica ciano">✦</span>
             <section>
-              <p>Campos</p>
-
-              <strong id="totalCampos"> 0 </strong>
+              <p data-i18n="stats.fields">Campos</p>
+              <strong id="totalCampos">0</strong>
             </section>
           </div>
         </article>
 
-        <!-- ================================================= -->
-        <!-- PLANILHAS CRIADAS -->
-        <!-- ================================================= -->
-
         <section class="area-planilhas">
           <div class="titulo-area">
             <div>
-              <h3>Planilhas recentes</h3>
-
-              <p>Continue trabalhando nos seus arquivos.</p>
+              <h3 data-i18n="dashboard.recent">Planilhas recentes</h3>
+              <p data-i18n="dashboard.recentText">
+                Continue trabalhando nos seus arquivos.
+              </p>
             </div>
           </div>
 
-          <!--
-                    essa div começa vazia.
-
-                    o JavaScript pega as planilhas
-                    que estão salvas e cria os cards aqui.
-                -->
+          <!-- o JavaScript cria os cards aqui -->
           <div id="listaPlanilhas" class="lista-planilhas"></div>
         </section>
       </section>
 
       <!-- ================================================= -->
-      <!-- EDITOR DA PLANILHA -->
+      <!-- EDITOR -->
       <!-- ================================================= -->
-
-      <!--
-            essa parte começa escondida.
-
-            quando uma planilha é aberta,
-            o dashboard desaparece e esse editor aparece.
-        -->
       <section id="editor" class="escondido">
-        <!-- ================================================= -->
-        <!-- TOPO DO EDITOR -->
-        <!-- ================================================= -->
-
         <header class="cabecalho-editor">
           <div class="informacoes-editor">
-            <!-- volta ao dashboard -->
-            <button class="voltar" onclick="mostrarDashboard()">
+            <button
+              class="voltar"
+              onclick="mostrarDashboard()"
+              data-i18n="common.back"
+            >
               ← Voltar
             </button>
 
             <div>
-              <!--
-                            mostra se estamos usando
-                            um modelo pronto
-                        -->
               <p id="textoModeloEditor" class="mini-texto">Editando planilha</p>
-
-              <!--
-                            nome da planilha.
-
-                            também pode ser editado diretamente.
-                        -->
               <input
                 id="nomePlanilhaEditor"
                 class="titulo-planilha"
                 onchange="alterarNomePlanilha()"
               />
-
-              <!--
-                            mostra Excel ou Google Sheets
-                        -->
               <p id="tipoPlanilha"></p>
             </div>
           </div>
 
-          <!-- ================================================= -->
-          <!-- BOTÕES DO EDITOR -->
-          <!-- ================================================= -->
-
           <div class="acoes">
-            <!-- adiciona uma coluna -->
-            <button onclick="adicionarColuna()">＋ Campo</button>
-
-            <!-- adiciona uma linha -->
-            <button onclick="adicionarLinha()">＋ Registro</button>
-
-            <!-- exporta a planilha -->
-            <button class="principal" onclick="exportarPlanilha()">
+            <!-- agora este botão abre um configurador completo -->
+            <button onclick="adicionarColuna()" data-i18n="editor.field">
+              ＋ Campo
+            </button>
+            <button onclick="adicionarLinha()" data-i18n="editor.record">
+              ＋ Registro
+            </button>
+            <button
+              class="principal"
+              onclick="exportarPlanilha()"
+              data-i18n="editor.export"
+            >
               ↓ Exportar
             </button>
           </div>
         </header>
 
-        <!-- ================================================= -->
-        <!-- PERSONALIZAÇÃO -->
-        <!-- ================================================= -->
-
-        <!--
-                nessa área o usuário consegue alterar
-                a aparência da própria planilha.
-            -->
+        <!-- personalização visual da planilha -->
         <section class="personalizacao">
-          <!-- título -->
           <div class="titulo-personalizacao">
             <div>
-              <span class="personalizacao-icone"> ✦ </span>
-
+              <span class="personalizacao-icone">✦</span>
               <div>
-                <h3>Personalização</h3>
-
-                <p>Escolha como sua planilha deve aparecer.</p>
+                <h3 data-i18n="personalization.title">Personalização</h3>
+                <p data-i18n="personalization.text">
+                  Escolha como sua planilha deve aparecer.
+                </p>
               </div>
             </div>
 
-            <!--
-                        volta todas as cores
-                        para o padrão do AeroGrid
-                    -->
-            <button onclick="restaurarPersonalizacao()">↻ Restaurar</button>
+            <button
+              onclick="restaurarPersonalizacao()"
+              data-i18n="personalization.restore"
+            >
+              ↻ Restaurar
+            </button>
           </div>
 
-          <!-- ================================================= -->
-          <!-- OPÇÕES -->
-          <!-- ================================================= -->
-
           <div class="opcoes-personalizacao">
-            <!-- fundo do cabeçalho -->
             <label>
-              Cabeçalho
-
+              <span data-i18n="personalization.header">Cabeçalho</span>
               <input
                 type="color"
                 id="corCabecalho"
-                value="#1597e5"
+                value="#244760"
                 onchange="alterarPersonalizacao()"
               />
             </label>
 
-            <!-- texto do cabeçalho -->
             <label>
-              Texto do cabeçalho
-
+              <span data-i18n="personalization.headerText"
+                >Texto do cabeçalho</span
+              >
               <input
                 type="color"
                 id="corTextoCabecalho"
@@ -423,22 +243,18 @@
               />
             </label>
 
-            <!-- cor das informações -->
             <label>
-              Informações
-
+              <span data-i18n="personalization.textColor">Informações</span>
               <input
                 type="color"
                 id="corTexto"
-                value="#24435a"
+                value="#253746"
                 onchange="alterarPersonalizacao()"
               />
             </label>
 
-            <!-- fundo das células -->
             <label>
-              Fundo das células
-
+              <span data-i18n="personalization.cells">Fundo das células</span>
               <input
                 type="color"
                 id="corCelulas"
@@ -447,339 +263,399 @@
               />
             </label>
 
-            <!-- bordas -->
             <label>
-              Bordas
-
+              <span data-i18n="personalization.borders">Bordas</span>
               <input
                 type="color"
                 id="corBorda"
-                value="#b7dce9"
+                value="#d5e0e6"
                 onchange="alterarPersonalizacao()"
               />
             </label>
 
-            <!-- formato visual -->
             <label>
-              Visualização
-
+              <span data-i18n="personalization.view">Visualização</span>
               <select id="estiloPlanilha" onchange="alterarPersonalizacao()">
-                <option value="grade">Grade</option>
-
-                <option value="tabela">Tabela</option>
+                <option value="grade" data-i18n="personalization.grid">
+                  Grade
+                </option>
+                <option value="tabela" data-i18n="personalization.table">
+                  Tabela
+                </option>
               </select>
             </label>
 
-            <!-- tamanho da letra -->
             <label>
-              Tamanho da fonte
-
+              <span data-i18n="personalization.fontSize">Tamanho da fonte</span>
               <select id="tamanhoFonte" onchange="alterarPersonalizacao()">
-                <option value="12">Pequena</option>
-
-                <option value="14" selected>Normal</option>
-
-                <option value="16">Grande</option>
-
-                <option value="18">Muito grande</option>
+                <option value="12" data-i18n="font.small">Pequena</option>
+                <option value="14" selected data-i18n="font.normal">
+                  Normal
+                </option>
+                <option value="16" data-i18n="font.large">Grande</option>
+                <option value="18" data-i18n="font.xlarge">Muito grande</option>
               </select>
             </label>
 
-            <!-- posição do texto -->
             <label>
-              Alinhamento
-
+              <span data-i18n="personalization.align">Alinhamento</span>
               <select id="alinhamento" onchange="alterarPersonalizacao()">
-                <option value="left">Esquerda</option>
-
-                <option value="center">Centralizado</option>
-
-                <option value="right">Direita</option>
+                <option value="left" data-i18n="align.left">Esquerda</option>
+                <option value="center" data-i18n="align.center">
+                  Centralizado
+                </option>
+                <option value="right" data-i18n="align.right">Direita</option>
               </select>
             </label>
           </div>
         </section>
 
-        <!-- ================================================= -->
-        <!-- RESULTADOS AUTOMÁTICOS -->
-        <!-- ================================================= -->
-
-        <!--
-                essa área aparece somente quando
-                uma planilha pronta possui cálculos.
-
-                exemplos:
-
-                Controle financeiro:
-                Entradas / Saídas / Saldo
-
-                Estoque:
-                Custo / Vendas / Lucro
-            -->
+        <!-- resultados automáticos de cada modelo -->
         <section id="resumoModelo" class="resumo-modelo escondido"></section>
 
-        <!-- ================================================= -->
-        <!-- TABELA -->
-        <!-- ================================================= -->
-
+        <!-- tabela criada pelo JavaScript -->
         <div class="tabela-container">
           <table id="tabelaPlanilha">
-            <!--
-                        o JavaScript cria
-                        os nomes das colunas aqui
-                    -->
             <thead>
               <tr id="cabecalhoTabela"></tr>
             </thead>
-
-            <!--
-                        as linhas e células
-                        também são criadas pelo JavaScript
-                    -->
             <tbody id="corpoTabela"></tbody>
           </table>
         </div>
       </section>
+
+      <!-- ================================================= -->
+      <!-- CONFIGURAÇÕES GERAIS -->
+      <!-- ================================================= -->
+      <section id="configuracoes" class="escondido">
+        <header class="cabecalho-configuracoes">
+          <div>
+            <p class="saudacao" data-i18n="settings.eyebrow">
+              Preferências do sistema
+            </p>
+            <h2 data-i18n="settings.title">Configurações</h2>
+            <p class="subtitulo" data-i18n="settings.subtitle">
+              Ajuste a aparência e o idioma do AeroGrid.
+            </p>
+          </div>
+        </header>
+
+        <div class="grade-configuracoes">
+          <!-- tema claro/escuro -->
+          <article class="card-configuracao">
+            <div class="icone-configuracao">◐</div>
+            <div class="conteudo-configuracao">
+              <h3 data-i18n="settings.theme">Tema do site</h3>
+              <p data-i18n="settings.themeText">
+                Alterne entre o tema claro e o tema escuro.
+              </p>
+              <select id="configTema" onchange="alterarConfiguracoes()">
+                <option value="light" data-i18n="settings.light">Claro</option>
+                <option value="dark" data-i18n="settings.dark">Escuro</option>
+              </select>
+            </div>
+          </article>
+
+          <!-- tamanho geral da interface -->
+          <article class="card-configuracao">
+            <div class="icone-configuracao">Aa</div>
+            <div class="conteudo-configuracao">
+              <h3 data-i18n="settings.font">Tamanho do texto</h3>
+              <p data-i18n="settings.fontText">
+                Aumente ou diminua os textos de todo o sistema.
+              </p>
+              <select id="configFonte" onchange="alterarConfiguracoes()">
+                <option value="small" data-i18n="font.small">Pequena</option>
+                <option value="normal" data-i18n="font.normal">Normal</option>
+                <option value="large" data-i18n="font.large">Grande</option>
+              </select>
+            </div>
+          </article>
+
+          <!-- idioma da interface -->
+          <article class="card-configuracao">
+            <div class="icone-configuracao">文</div>
+            <div class="conteudo-configuracao">
+              <h3 data-i18n="settings.language">Idioma</h3>
+              <p data-i18n="settings.languageText">
+                Escolha o idioma usado pela interface.
+              </p>
+              <select id="configIdioma" onchange="alterarConfiguracoes()">
+                <option value="pt-BR">Português</option>
+                <option value="en">English</option>
+              </select>
+            </div>
+          </article>
+        </div>
+
+        <section class="area-restaurar-config">
+          <div>
+            <h3 data-i18n="settings.restoreTitle">Restaurar configurações</h3>
+            <p data-i18n="settings.restoreText">
+              Volta para tema claro, fonte normal e português.
+            </p>
+          </div>
+
+          <button
+            onclick="restaurarConfiguracoes()"
+            data-i18n="settings.restore"
+          >
+            Restaurar padrão
+          </button>
+        </section>
+      </section>
     </main>
 
     <!-- ================================================= -->
-    <!-- MODAL DE CRIAÇÃO -->
+    <!-- MODAL DE CRIAÇÃO DE PLANILHA -->
     <!-- ================================================= -->
-
-    <!--
-        dialog cria uma janela sobre o site.
-
-        essa janela agora permite:
-        - criar planilha em branco
-        - usar modelos de negócios
-        - usar modelos de educação
-    -->
     <dialog id="modalCriacao" class="modal-grande">
       <form onsubmit="criarPlanilha(event)">
-        <!-- título -->
         <div class="titulo-modal">
           <div class="icone-modal">✦</div>
-
           <div>
-            <h2>Nova planilha</h2>
-
-            <p>Crie do zero ou escolha um modelo pronto.</p>
+            <h2 data-i18n="create.title">Nova planilha</h2>
+            <p data-i18n="create.subtitle">
+              Crie do zero ou escolha um modelo pronto.
+            </p>
           </div>
         </div>
 
-        <!-- ================================================= -->
-        <!-- NOME -->
-        <!-- ================================================= -->
-
         <label>
-          Nome da planilha
-
+          <span data-i18n="create.name">Nome da planilha</span>
           <input
             id="nomePlanilha"
-            placeholder="Ex: Controle da loja"
             required
+            data-i18n-placeholder="create.namePlaceholder"
+            placeholder="Ex: Controle da loja"
           />
         </label>
 
-        <!-- ================================================= -->
-        <!-- FORMATO -->
-        <!-- ================================================= -->
-
         <label>
-          Formato de exportação
-
+          <span data-i18n="create.format">Formato de exportação</span>
           <select id="tipoExportacao">
             <option value="excel">Microsoft Excel</option>
-
             <option value="google">Google Sheets</option>
           </select>
         </label>
 
-        <!--
-                CAMPO ESCONDIDO
-
-                o usuário não vê esse campo.
-
-                o JavaScript usa ele para guardar
-                qual modelo foi selecionado.
-            -->
+        <!-- guarda qual modelo foi escolhido -->
         <input type="hidden" id="modeloSelecionado" value="vazio" />
 
-        <!-- ================================================= -->
-        <!-- MODELOS PRONTOS -->
-        <!-- ================================================= -->
-
         <section class="area-modelos-modal">
-          <!-- título -->
           <div class="titulo-modelos">
-            <h3>Como deseja começar?</h3>
-
-            <p>
-              Os modelos inteligentes já possuem campos e cálculos configurados.
+            <h3 data-i18n="create.start">Como deseja começar?</h3>
+            <p data-i18n="create.modelsText">
+              Modelos inteligentes já possuem campos e cálculos configurados.
             </p>
           </div>
 
-          <!-- ================================================= -->
-          <!-- FILTROS -->
-          <!-- ================================================= -->
-
-          <!--
-                    esses botões filtram os modelos
-                    por categoria.
-                -->
           <div class="filtros-modelos">
-            <!-- todos -->
             <button
               type="button"
               class="filtro-modelo ativo"
               onclick="filtrarModelos('todos', this)"
+              data-i18n="filter.all"
             >
               Todos
             </button>
-
-            <!-- negócios -->
             <button
               type="button"
               class="filtro-modelo"
               onclick="filtrarModelos('negocios', this)"
+              data-i18n="filter.business"
             >
               Negócios
             </button>
-
-            <!-- educação -->
             <button
               type="button"
               class="filtro-modelo"
               onclick="filtrarModelos('educacao', this)"
+              data-i18n="filter.education"
             >
               Educação
             </button>
           </div>
 
-          <!-- ================================================= -->
-          <!-- PLANILHA EM BRANCO -->
-          <!-- ================================================= -->
-
-          <!--
-                    se essa opção for escolhida,
-                    o usuário cria os próprios campos.
-                -->
+          <!-- planilha em branco -->
           <button
             type="button"
             id="modeloVazio"
             class="modelo-vazio modelo-selecionado"
             onclick="selecionarModelo('vazio')"
           >
-            <span> ＋ </span>
-
+            <span>＋</span>
             <div>
-              <strong> Planilha em branco </strong>
-
-              <small> Escolha seus próprios campos. </small>
+              <strong data-i18n="create.blank">Planilha em branco</strong>
+              <small data-i18n="create.blankText"
+                >Escolha seus próprios campos.</small
+              >
             </div>
           </button>
 
-          <!-- ================================================= -->
-          <!-- GALERIA -->
-          <!-- ================================================= -->
-
-          <!--
-                    o JavaScript cria automaticamente
-                    os cards dos modelos dentro desta div.
-                -->
           <div id="listaModelos" class="lista-modelos"></div>
-
-          <!--
-                    depois de escolher um modelo,
-                    suas informações aparecem aqui.
-                -->
           <div id="infoModeloSelecionado" class="info-modelo escondido"></div>
         </section>
 
-        <!-- ================================================= -->
-        <!-- CAMPOS MANUAIS -->
-        <!-- ================================================= -->
-
-        <!--
-                essa parte só aparece quando
-                "Planilha em branco" está selecionada.
-            -->
+        <!-- esta área só aparece na planilha em branco -->
         <section id="areaCamposManuais" class="area-campos-modal">
-          <h3>Campos da planilha</h3>
-
-          <p class="descricao">Exemplo: Nome, Idade, Telefone, Cidade...</p>
-
-          <!-- campos adicionados pelo JavaScript -->
+          <h3 data-i18n="create.fields">Campos da planilha</h3>
+          <p class="descricao" data-i18n="create.fieldsText">
+            Exemplo: Nome, Idade, Telefone, Cidade...
+          </p>
           <div id="camposCriacao"></div>
 
-          <!-- cria outro campo -->
           <button
             type="button"
             class="secundario"
             onclick="adicionarCampoCriacao()"
+            data-i18n="create.addField"
           >
             ＋ Adicionar campo
           </button>
         </section>
 
-        <!-- ================================================= -->
-        <!-- BOTÕES DO MODAL -->
-        <!-- ================================================= -->
-
         <footer>
-          <!-- fecha sem criar -->
-          <button type="button" class="cancelar" onclick="fecharCriacao()">
+          <button
+            type="button"
+            onclick="fecharCriacao()"
+            data-i18n="common.cancel"
+          >
             Cancelar
           </button>
-
-          <!-- envia o formulário -->
-          <button class="principal">Criar planilha</button>
+          <button class="principal" data-i18n="create.submit">
+            Criar planilha
+          </button>
         </footer>
       </form>
     </dialog>
 
     <!-- ================================================= -->
-    <!-- MODAL PARA NOVO CAMPO -->
+    <!-- CONFIGURADOR DE NOVO CAMPO -->
     <!-- ================================================= -->
-
     <!--
-        usado dentro de uma planilha já criada
-        quando o usuário aperta "+ Campo".
+        agora o usuário escolhe:
+        - nome do campo
+        - se é informação ou cálculo
+        - qual é a função dele
+        - onde a coluna deve ficar
     -->
     <dialog id="modalCampo">
       <form onsubmit="salvarNovaColuna(event)">
         <div class="titulo-modal">
           <div class="icone-modal">＋</div>
-
           <div>
-            <h2>Novo campo</h2>
-
-            <p>Adicione uma nova coluna.</p>
+            <h2 data-i18n="field.title">Novo campo</h2>
+            <p data-i18n="field.subtitle">
+              Configure como este campo deve funcionar.
+            </p>
           </div>
         </div>
 
         <label>
-          Nome do campo
-
-          <input id="novoCampo" placeholder="Ex: Telefone" required />
+          <span data-i18n="field.name">Nome do campo</span>
+          <input
+            id="novoCampo"
+            required
+            data-i18n-placeholder="field.namePlaceholder"
+            placeholder="Ex: Nota 4"
+          />
         </label>
 
-        <footer>
-          <button type="button" onclick="modalCampo.close()">Cancelar</button>
+        <label>
+          <span data-i18n="field.type">Tipo do campo</span>
+          <select id="tipoCampoNovo" onchange="atualizarOpcoesCampo()">
+            <option value="info" data-i18n="field.info">Informação</option>
+            <option value="calculo" data-i18n="field.calculation">
+              Cálculo automático
+            </option>
+          </select>
+        </label>
 
-          <button class="principal">Adicionar</button>
+        <!--
+                esta opção é a mais importante.
+
+                exemplo:
+                Nota 4 + função "Nota"
+                faz o campo participar automaticamente da média.
+            -->
+        <label>
+          <span data-i18n="field.function">Função do campo</span>
+          <select id="funcaoCampoNovo"></select>
+        </label>
+
+        <!-- posição escolhida pelo usuário -->
+        <label>
+          <span data-i18n="field.position">Posição</span>
+          <select id="posicaoCampoNovo"></select>
+        </label>
+
+        <div class="aviso-campo">
+          <strong data-i18n="field.tipTitle">Como funciona?</strong>
+          <p data-i18n="field.tipText">
+            Campos de informação guardam dados. Campos de cálculo são
+            preenchidos automaticamente. A função informa ao AeroGrid como
+            aquele campo participa dos cálculos.
+          </p>
+        </div>
+
+        <footer>
+          <button
+            type="button"
+            onclick="modalCampo.close()"
+            data-i18n="common.cancel"
+          >
+            Cancelar
+          </button>
+          <button class="principal" data-i18n="field.add">Adicionar</button>
         </footer>
       </form>
     </dialog>
 
     <!-- ================================================= -->
-    <!-- JAVASCRIPT -->
+    <!-- NOTIFICAÇÕES DO PRÓPRIO AEROGRID -->
     <!-- ================================================= -->
-
     <!--
-        chama o arquivo responsável
-        por fazer o sistema funcionar
+        substitui alert(), confirm() e prompt().
+        as mensagens agora aparecem dentro do site.
     -->
+    <dialog id="modalNotificacao" class="modal-notificacao">
+      <div class="conteudo-notificacao">
+        <div class="topo-notificacao">
+          <div id="iconeNotificacao" class="icone-notificacao">!</div>
+
+          <div>
+            <h2 id="notificacaoTitulo">AeroGrid</h2>
+            <p id="notificacaoMensagem"></p>
+          </div>
+        </div>
+
+        <!-- aparece apenas quando a notificação pede um texto -->
+        <div id="areaInputNotificacao" class="area-input-notificacao escondido">
+          <input id="inputNotificacao" autocomplete="off" />
+        </div>
+
+        <footer>
+          <button
+            type="button"
+            id="botaoCancelarNotificacao"
+            onclick="cancelarNotificacao()"
+          >
+            Cancelar
+          </button>
+
+          <button
+            type="button"
+            id="botaoConfirmarNotificacao"
+            class="principal"
+            onclick="confirmarNotificacao()"
+          >
+            OK
+          </button>
+        </footer>
+      </div>
+    </dialog>
+
     <script src="script.js"></script>
   </body>
 </html>
