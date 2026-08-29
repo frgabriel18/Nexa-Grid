@@ -1,22 +1,271 @@
+/* ================================================= */
+/* AEROGRID - JAVASCRIPT PRINCIPAL */
+/* ================================================= */
+
 /*
-    pega as planilhas que já estavam salvas no navegador
+    este arquivo é responsável por fazer
+    praticamente todo o sistema funcionar.
+
+    ele cuida de:
+
+    - criar planilhas
+    - salvar planilhas
+    - abrir planilhas
+    - criar os modelos prontos
+    - fazer cálculos automáticos
+    - personalizar
+    - excluir registros
+    - exportar para excel
+*/
+
+/* ================================================= */
+/* MODELOS PRONTOS */
+/* ================================================= */
+
+/*
+    aqui cadastramos todos os modelos
+    disponíveis no AeroGrid.
+
+    cada modelo possui:
+
+    nome
+        nome mostrado para o usuário.
+
+    categoria
+        negócios ou educação.
+
+    icone
+        emoji mostrado no card.
+
+    descricao
+        pequena explicação.
+
+    colunas
+        campos que serão criados automaticamente.
+
+    calculadas
+        posição das colunas que o usuário
+        NÃO precisa preencher.
+
+        elas são calculadas pelo sistema.
+
+    resumo
+        informa qual tipo de painel de resultados
+        será mostrado acima da tabela.
+*/
+const modelosPlanilha = {
+  /* ================================================= */
+  /* NEGÓCIOS */
+  /* ================================================= */
+
+  financeiro: {
+    nome: "Controle Financeiro",
+
+    categoria: "negocios",
+
+    icone: "💰",
+
+    descricao:
+      "Registre entradas e saídas e acompanhe o saldo automaticamente.",
+
+    colunas: ["Descrição", "Categoria", "Tipo", "Valor"],
+
+    /*
+            não existe coluna automática dentro da tabela.
+
+            os cálculos de entrada, saída e saldo
+            aparecem no painel de resumo.
+        */
+    calculadas: [],
+
+    resumo: "financeiro",
+  },
+
+  orcamento: {
+    nome: "Orçamento",
+
+    categoria: "negocios",
+
+    icone: "🧾",
+
+    descricao: "Calcule automaticamente o total de cada item.",
+
+    colunas: ["Item", "Quantidade", "Valor unitário", "Total"],
+
+    /*
+            JavaScript começa a contar no zero.
+
+            0 = Item
+            1 = Quantidade
+            2 = Valor unitário
+            3 = Total
+
+            então a coluna 3 será calculada.
+        */
+    calculadas: [3],
+
+    resumo: "orcamento",
+  },
+
+  estoque: {
+    nome: "Controle de Estoque",
+
+    categoria: "negocios",
+
+    icone: "📦",
+
+    descricao: "Controle custos, estoque, lucro e potencial de venda.",
+
+    colunas: [
+      "Produto",
+      "Quantidade",
+      "Custo unitário",
+      "Preço de venda",
+      "Valor em estoque",
+      "Lucro unitário",
+      "Potencial de venda",
+    ],
+
+    /*
+            essas três colunas
+            são calculadas pelo sistema.
+        */
+    calculadas: [4, 5, 6],
+
+    resumo: "estoque",
+  },
+
+  vendas: {
+    nome: "Vendas e Comissão",
+
+    categoria: "negocios",
+
+    icone: "📈",
+
+    descricao: "Calcule o total vendido e a comissão de cada venda.",
+
+    colunas: [
+      "Vendedor",
+      "Produto",
+      "Quantidade",
+      "Valor unitário",
+      "Total da venda",
+      "Comissão %",
+      "Comissão",
+    ],
+
+    calculadas: [4, 6],
+
+    resumo: "vendas",
+  },
+
+  /* ================================================= */
+  /* EDUCAÇÃO */
+  /* ================================================= */
+
+  notas: {
+    nome: "Notas Escolares",
+
+    categoria: "educacao",
+
+    icone: "🎓",
+
+    descricao: "Digite três notas e o sistema calcula média e situação.",
+
+    colunas: ["Aluno", "Nota 1", "Nota 2", "Nota 3", "Média", "Situação"],
+
+    calculadas: [4, 5],
+
+    resumo: "notas",
+  },
+
+  frequencia: {
+    nome: "Frequência Escolar",
+
+    categoria: "educacao",
+
+    icone: "📚",
+
+    descricao: "Calcule presenças e porcentagem de frequência.",
+
+    colunas: [
+      "Aluno",
+      "Total de aulas",
+      "Faltas",
+      "Presenças",
+      "Frequência %",
+      "Situação",
+    ],
+
+    calculadas: [3, 4, 5],
+
+    resumo: "frequencia",
+  },
+
+  estudos: {
+    nome: "Plano de Estudos",
+
+    categoria: "educacao",
+
+    icone: "📝",
+
+    descricao: "Organize matérias e acompanhe seu progresso.",
+
+    colunas: [
+      "Disciplina",
+      "Conteúdo",
+      "Data",
+      "Horas planejadas",
+      "Horas estudadas",
+      "Progresso %",
+    ],
+
+    calculadas: [5],
+
+    resumo: "estudos",
+  },
+};
+
+/*
+    guarda qual filtro está selecionado
+    na janela dos modelos.
+
+    começa mostrando todos.
+*/
+let filtroModelosAtual = "todos";
+
+/* ================================================= */
+/* DADOS SALVOS */
+/* ================================================= */
+
+/*
+    localStorage é uma pequena memória
+    do navegador.
+
+    aqui tentamos pegar as planilhas
+    que já foram criadas anteriormente.
 
     se não existir nenhuma,
-    cria uma lista vazia
+    usamos uma lista vazia [].
 */
 let planilhas = JSON.parse(localStorage.getItem("planilhas")) || [];
 
 /*
-    aqui fica guardada a planilha
-    que está aberta no momento
+    guarda qual planilha
+    está aberta no editor.
 */
 let planilhaAtual = null;
 
-/*
-    agora pegamos algumas partes do html
+/* ================================================= */
+/* ELEMENTOS DO HTML */
+/* ================================================= */
 
-    fazemos isso para conseguir mudar
-    essas partes usando javascript
+/*
+    aqui guardamos algumas partes do HTML
+    em variáveis.
+
+    assim não precisamos usar
+    document.getElementById várias vezes.
 */
 const dashboard = document.getElementById("dashboard");
 
@@ -34,95 +283,248 @@ const corpoTabela = document.getElementById("corpoTabela");
 
 const tabelaPlanilha = document.getElementById("tabelaPlanilha");
 
-/*
-    essa função cria a personalização padrão
+const resumoModelo = document.getElementById("resumoModelo");
 
-    ela é usada quando uma planilha
-    é criada pela primeira vez
+/* ================================================= */
+/* PERSONALIZAÇÃO PADRÃO */
+/* ================================================= */
+
+/*
+    essa função devolve as cores
+    usadas por uma planilha nova.
 */
 function personalizacaoPadrao() {
   return {
-    /*
-            cor de fundo do cabeçalho
-        */
     corCabecalho: "#1597e5",
 
-    /*
-            cor do texto do cabeçalho
-        */
     corTextoCabecalho: "#ffffff",
 
-    /*
-            cor das informações
-        */
     corTexto: "#24435a",
 
-    /*
-            cor do fundo das células
-        */
     corCelulas: "#ffffff",
 
-    /*
-            cor das bordas
-        */
     corBorda: "#b7dce9",
 
-    /*
-            estilo da tabela
-        */
     estilo: "grade",
 
-    /*
-            tamanho das letras
-        */
     tamanhoFonte: "14",
 
-    /*
-            posição do texto
-        */
     alinhamento: "left",
   };
 }
 
-/*
-    aqui deixamos apenas planilhas
-    do excel ou google sheets
+/* ================================================= */
+/* CORRIGIR PLANILHAS ANTIGAS */
+/* ================================================= */
 
-    planilhas antigas de csv são ignoradas
+/*
+    mantém apenas planilhas criadas
+    para Excel ou Google Sheets.
 */
 planilhas = planilhas.filter((planilha) => {
   return planilha.tipo === "excel" || planilha.tipo === "google";
 });
 
 /*
-    algumas planilhas antigas podem não ter
-    a parte de personalização
+    planilhas criadas antes dessas novas funções
+    podem não possuir "personalizacao" ou "modelo".
 
-    então colocamos o padrão nelas
+    então adicionamos essas informações.
 */
 planilhas.forEach((planilha) => {
   if (!planilha.personalizacao) {
     planilha.personalizacao = personalizacaoPadrao();
   }
+
+  /*
+            planilha antiga será tratada
+            como planilha em branco.
+        */
+  if (!planilha.modelo) {
+    planilha.modelo = "vazio";
+  }
 });
 
 /*
-    salva qualquer correção feita
+    salva as correções.
 */
 salvar();
 
 /* ================================================= */
-/* SALVAR DADOS */
+/* SALVAR */
 /* ================================================= */
 
 /*
-    essa função salva todas as planilhas
-    dentro do navegador
-
-    usamos localStorage para isso
+    transforma a lista de planilhas em texto JSON
+    e salva dentro do navegador.
 */
 function salvar() {
   localStorage.setItem("planilhas", JSON.stringify(planilhas));
+}
+
+/* ================================================= */
+/* FUNÇÕES DE AJUDA */
+/* ================================================= */
+
+/*
+    verifica se alguma informação
+    realmente foi preenchida.
+*/
+function temValor(valor) {
+  return valor !== "" && valor !== null && valor !== undefined;
+}
+
+/*
+    transforma valores digitados
+    pelo usuário em números.
+
+    exemplos aceitos:
+
+    10
+    10,50
+    10.50
+    R$ 10,50
+*/
+function numero(valor) {
+  /*
+        se já for um número,
+        não precisamos converter.
+    */
+  if (typeof valor === "number") {
+    return valor;
+  }
+
+  /*
+        vazio vira zero.
+    */
+  if (!temValor(valor)) {
+    return 0;
+  }
+
+  let texto = String(valor).trim().replace(/R\$/gi, "").replace(/\s/g, "");
+
+  /*
+        exemplo brasileiro:
+
+        1.500,50
+
+        vira:
+
+        1500.50
+    */
+  if (texto.includes(".") && texto.includes(",")) {
+    texto = texto.replace(/\./g, "").replace(",", ".");
+  } else {
+    /*
+            10,50 vira 10.50
+        */
+    texto = texto.replace(",", ".");
+  }
+
+  /*
+        remove caracteres
+        que não sejam números.
+    */
+  texto = texto.replace(/[^0-9.-]/g, "");
+
+  const resultado = Number(texto);
+
+  /*
+        se a conversão falhar,
+        retorna zero.
+    */
+  if (Number.isNaN(resultado)) {
+    return 0;
+  }
+
+  return resultado;
+}
+
+/*
+    deixa números com no máximo
+    duas casas decimais.
+*/
+function arredondar(valor) {
+  return Number(Number(valor).toFixed(2));
+}
+
+/*
+    transforma número em dinheiro brasileiro.
+
+    1500
+
+    vira:
+
+    R$ 1.500,00
+*/
+function dinheiro(valor) {
+  return new Intl.NumberFormat("pt-BR", {
+    style: "currency",
+
+    currency: "BRL",
+  }).format(numero(valor));
+}
+
+/*
+    deixa um texto em letras pequenas
+    e remove acentos.
+
+    isso ajuda o sistema a entender:
+
+    Saída
+    saida
+    SAÍDA
+
+    como a mesma palavra.
+*/
+function normalizarTexto(texto) {
+  return String(texto || "")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .trim();
+}
+
+/*
+    procura um modelo pelo seu nome interno.
+
+    exemplo:
+
+    obterModelo("estoque")
+*/
+function obterModelo(id) {
+  return modelosPlanilha[id] || null;
+}
+
+/*
+    devolve o nome bonito do modelo.
+*/
+function nomeModelo(id) {
+  const modelo = obterModelo(id);
+
+  if (!modelo) {
+    return "Planilha em branco";
+  }
+
+  return modelo.nome;
+}
+
+/*
+    verifica se determinada coluna
+    deve ser calculada automaticamente.
+*/
+function ehColunaCalculada(indice) {
+  if (!planilhaAtual) {
+    return false;
+  }
+
+  const modelo = obterModelo(planilhaAtual.modelo);
+
+  if (!modelo) {
+    return false;
+  }
+
+  return modelo.calculadas.includes(indice);
 }
 
 /* ================================================= */
@@ -130,87 +532,68 @@ function salvar() {
 /* ================================================= */
 
 /*
-    mostra a tela inicial
+    volta para a tela principal.
 */
 function mostrarDashboard() {
   /*
-        mostra o dashboard
+        mostra dashboard.
     */
   dashboard.classList.remove("escondido");
 
   /*
-        esconde o editor
+        esconde editor.
     */
   editor.classList.add("escondido");
 
   /*
-        nenhuma planilha fica aberta
+        nenhuma planilha está aberta.
     */
   planilhaAtual = null;
 
   /*
-        atualiza as informações da tela
+        atualiza os cards e números.
     */
   carregarDashboard();
 }
 
 /*
-    essa função atualiza tudo
-    que aparece no dashboard
+    atualiza as informações
+    mostradas no dashboard.
 */
 function carregarDashboard() {
   /*
-        limpa os cards antigos
+        limpa os cards antigos.
     */
   listaPlanilhas.innerHTML = "";
 
-  /*
-        começa contando registros do zero
-    */
   let registros = 0;
 
-  /*
-        começa contando campos do zero
-    */
   let campos = 0;
 
   /*
-        passa por todas as planilhas
+        percorre todas as planilhas
+        para contar linhas e colunas.
     */
   planilhas.forEach((planilha) => {
-    /*
-            soma a quantidade de linhas
-        */
     registros += planilha.linhas.length;
 
-    /*
-            soma a quantidade de colunas
-        */
     campos += planilha.colunas.length;
   });
 
   /*
-        mostra quantas planilhas existem
+        mostra os totais no HTML.
     */
   document.getElementById("totalPlanilhas").textContent = planilhas.length;
 
-  /*
-        mostra quantos registros existem
-    */
   document.getElementById("totalRegistros").textContent = registros;
 
-  /*
-        mostra quantos campos existem
-    */
   document.getElementById("totalCampos").textContent = campos;
 
   /*
-        se não existir nenhuma planilha
+        caso nenhuma planilha exista,
+        mostra uma mensagem.
     */
   if (planilhas.length === 0) {
-    /*
-            mostra uma mensagem no lugar dos cards
-        */
     listaPlanilhas.innerHTML = `
 
             <div class="vazio">
@@ -220,155 +603,467 @@ function carregarDashboard() {
                 </h3>
 
                 <p>
-                    Crie sua primeira planilha.
+                    Crie uma do zero ou use um modelo pronto.
                 </p>
 
             </div>
 
         `;
 
-    /*
-            para a função aqui
-        */
     return;
   }
 
   /*
-        agora criamos um card
-        para cada planilha salva
+        cria um card para cada planilha.
     */
   planilhas.forEach((planilha) => {
-    /*
-            cria um elemento article
-        */
     const card = document.createElement("article");
 
-    /*
-            coloca a classe visual do card
-        */
     card.className = "card-planilha";
 
     /*
-            coloca as informações dentro do card
-        */
+                se a planilha usa um modelo,
+                mostramos o nome dele.
+            */
+    const etiquetaModelo =
+      planilha.modelo && planilha.modelo !== "vazio"
+        ? `
+                        <span class="tag-modelo">
+
+                            ${nomeModelo(planilha.modelo)}
+
+                        </span>
+                    `
+        : "";
+
     card.innerHTML = `
 
-            <h4>
-                📄 ${planilha.nome}
-            </h4>
+                <div class="topo-card-planilha">
 
-            <p>
+                    <h4>
 
-                ${planilha.linhas.length}
-                registros ·
+                        📄 ${planilha.nome}
 
-                ${planilha.colunas.length}
-                campos
+                    </h4>
 
-            </p>
+                    ${etiquetaModelo}
 
-            <footer>
+                </div>
 
-                <span class="tag">
 
-                    ${nomeTipo(planilha.tipo)}
+                <p>
 
-                </span>
+                    ${planilha.linhas.length}
+                    registros ·
 
-                <button
-                    class="excluir"
-                    onclick="
-                        excluirPlanilha(
-                            event,
-                            '${planilha.id}'
-                        )
-                    "
-                >
-                    Excluir
-                </button>
+                    ${planilha.colunas.length}
+                    campos
 
-            </footer>
+                </p>
 
-        `;
+
+                <footer>
+
+                    <span class="tag">
+
+                        ${nomeTipo(planilha.tipo)}
+
+                    </span>
+
+
+                    <button
+                        class="excluir"
+                        onclick="
+                            excluirPlanilha(
+                                event,
+                                '${planilha.id}'
+                            )
+                        "
+                    >
+                        Excluir
+                    </button>
+
+                </footer>
+
+            `;
 
     /*
-            quando clicar no card
-        */
+                clicar no card abre a planilha.
+            */
     card.addEventListener("click", () => {
-      /*
-                    abre aquela planilha
-                */
       abrirPlanilha(planilha.id);
     });
 
     /*
-            coloca o card na tela
-        */
+                coloca o card na tela.
+            */
     listaPlanilhas.appendChild(card);
   });
 }
 
 /* ================================================= */
-/* CRIAR PLANILHA */
+/* ABRIR CRIAÇÃO */
 /* ================================================= */
 
 /*
-    abre a janela para criar
-    uma nova planilha
+    prepara e abre o modal
+    de criação de planilhas.
 */
 function abrirCriacao() {
   /*
-        limpa o nome antigo
+        limpa o nome antigo.
     */
   document.getElementById("nomePlanilha").value = "";
 
   /*
-        limpa os campos antigos
+        começa selecionando Excel.
+    */
+  document.getElementById("tipoExportacao").value = "excel";
+
+  /*
+        limpa campos antigos.
     */
   document.getElementById("camposCriacao").innerHTML = "";
 
   /*
-        cria automaticamente
-        um campo chamado Nome
+        começa com um campo chamado Nome.
     */
   adicionarCampoCriacao("Nome");
 
   /*
-        abre a janelinha
+        começa selecionando
+        planilha em branco.
+    */
+  document.getElementById("modeloSelecionado").value = "vazio";
+
+  filtroModelosAtual = "todos";
+
+  /*
+        remove seleção visual
+        dos filtros antigos.
+    */
+  document.querySelectorAll(".filtro-modelo").forEach((botao) => {
+    botao.classList.remove("ativo");
+  });
+
+  /*
+        seleciona novamente
+        o primeiro filtro: Todos.
+    */
+  const primeiroFiltro = document.querySelector(".filtro-modelo");
+
+  if (primeiroFiltro) {
+    primeiroFiltro.classList.add("ativo");
+  }
+
+  /*
+        cria os cards dos modelos.
+    */
+  renderizarModelos();
+
+  /*
+        seleciona planilha em branco.
+    */
+  selecionarModelo("vazio");
+
+  /*
+        abre o modal.
     */
   modalCriacao.showModal();
 }
 
 /*
-    fecha a janela de criação
+    fecha o modal.
 */
 function fecharCriacao() {
   modalCriacao.close();
 }
 
+/* ================================================= */
+/* GALERIA DE MODELOS */
+/* ================================================= */
+
 /*
-    adiciona um campo
-    dentro da criação da planilha
+    cria visualmente todos os cards
+    dos modelos disponíveis.
+*/
+function renderizarModelos() {
+  const lista = document.getElementById("listaModelos");
+
+  const selecionado = document.getElementById("modeloSelecionado").value;
+
+  /*
+        limpa modelos antigos.
+    */
+  lista.innerHTML = "";
+
+  /*
+        Object.entries transforma os modelos
+        em pares:
+
+        id + informações do modelo.
+    */
+  Object.entries(modelosPlanilha).forEach(([id, modelo]) => {
+    /*
+                se existe um filtro ativo,
+                ignoramos modelos de outra categoria.
+            */
+    if (
+      filtroModelosAtual !== "todos" &&
+      modelo.categoria !== filtroModelosAtual
+    ) {
+      return;
+    }
+
+    /*
+                cria o botão do modelo.
+            */
+    const botao = document.createElement("button");
+
+    botao.type = "button";
+
+    botao.className = "card-modelo";
+
+    botao.dataset.modelo = id;
+
+    /*
+                destaca se já estiver selecionado.
+            */
+    if (selecionado === id) {
+      botao.classList.add("modelo-selecionado");
+    }
+
+    /*
+                transforma categoria
+                em um nome bonito.
+            */
+    const categoria = modelo.categoria === "educacao" ? "Educação" : "Negócios";
+
+    /*
+                coloca informações dentro do card.
+            */
+    botao.innerHTML = `
+
+                <span class="icone-modelo">
+
+                    ${modelo.icone}
+
+                </span>
+
+
+                <span class="conteudo-modelo">
+
+                    <small>
+
+                        ${categoria}
+
+                    </small>
+
+
+                    <strong>
+
+                        ${modelo.nome}
+
+                    </strong>
+
+
+                    <span>
+
+                        ${modelo.descricao}
+
+                    </span>
+
+                </span>
+
+            `;
+
+    /*
+                clicar seleciona o modelo.
+            */
+    botao.onclick = () => {
+      selecionarModelo(id);
+    };
+
+    lista.appendChild(botao);
+  });
+}
+
+/*
+    troca entre:
+
+    Todos
+    Negócios
+    Educação
+*/
+function filtrarModelos(filtro, botao) {
+  filtroModelosAtual = filtro;
+
+  /*
+        tira o destaque de todos.
+    */
+  document.querySelectorAll(".filtro-modelo").forEach((item) => {
+    item.classList.remove("ativo");
+  });
+
+  /*
+        destaca o atual.
+    */
+  if (botao) {
+    botao.classList.add("ativo");
+  }
+
+  /*
+        monta novamente a galeria.
+    */
+  renderizarModelos();
+}
+
+/*
+    seleciona um modelo específico.
+*/
+function selecionarModelo(id) {
+  const inputModelo = document.getElementById("modeloSelecionado");
+
+  const areaManual = document.getElementById("areaCamposManuais");
+
+  const info = document.getElementById("infoModeloSelecionado");
+
+  const botaoVazio = document.getElementById("modeloVazio");
+
+  /*
+        guarda o modelo escolhido.
+    */
+  inputModelo.value = id;
+
+  /*
+        tira destaques antigos.
+    */
+  document.querySelectorAll(".card-modelo").forEach((card) => {
+    card.classList.remove("modelo-selecionado");
+  });
+
+  botaoVazio.classList.remove("modelo-selecionado");
+
+  /*
+        se escolheu planilha em branco...
+    */
+  if (id === "vazio") {
+    /*
+            destaca planilha em branco.
+        */
+    botaoVazio.classList.add("modelo-selecionado");
+
+    /*
+            mostra os campos manuais.
+        */
+    areaManual.classList.remove("escondido");
+
+    /*
+            esconde informações de modelo.
+        */
+    info.classList.add("escondido");
+
+    return;
+  }
+
+  /*
+        pega as informações do modelo.
+    */
+  const modelo = obterModelo(id);
+
+  if (!modelo) {
+    return;
+  }
+
+  /*
+        encontra o card escolhido.
+    */
+  const card = document.querySelector(`[data-modelo="${id}"]`);
+
+  /*
+        destaca o card.
+    */
+  if (card) {
+    card.classList.add("modelo-selecionado");
+  }
+
+  /*
+        como o modelo já possui campos,
+        escondemos a criação manual.
+    */
+  areaManual.classList.add("escondido");
+
+  /*
+        mostra informações do modelo.
+    */
+  info.innerHTML = `
+
+        <strong>
+
+            ${modelo.icone}
+
+            ${modelo.nome} selecionado
+
+        </strong>
+
+
+        <p>
+
+            Campos:
+
+            ${modelo.colunas.join(" · ")}
+
+        </p>
+
+
+        ${
+          modelo.calculadas.length > 0
+            ? `
+                    <small>
+
+                        ∑ Este modelo possui
+                        cálculos automáticos.
+
+                    </small>
+                `
+            : ""
+        }
+
+    `;
+
+  info.classList.remove("escondido");
+
+  /*
+        se o usuário ainda não colocou um nome,
+        usamos o nome do próprio modelo.
+    */
+  const nomeInput = document.getElementById("nomePlanilha");
+
+  if (!nomeInput.value.trim()) {
+    nomeInput.value = modelo.nome;
+  }
+}
+
+/* ================================================= */
+/* CAMPOS MANUAIS */
+/* ================================================= */
+
+/*
+    adiciona um campo na criação
+    de uma planilha em branco.
 */
 function adicionarCampoCriacao(valor = "") {
-  /*
-        pega a área onde os campos ficam
-    */
   const container = document.getElementById("camposCriacao");
 
   /*
-        cria uma nova caixinha
+        cria uma nova div.
     */
   const campo = document.createElement("div");
 
-  /*
-        coloca uma classe nela
-    */
   campo.className = "campo-criacao";
 
   /*
-        cria o campo para escrever
-        e o botão para apagar
+        adiciona input e botão de excluir.
     */
   campo.innerHTML = `
 
@@ -378,6 +1073,7 @@ function adicionarCampoCriacao(valor = "") {
             value="${valor}"
             required
         >
+
 
         <button
             type="button"
@@ -390,266 +1086,532 @@ function adicionarCampoCriacao(valor = "") {
 
     `;
 
-  /*
-        coloca o novo campo na tela
-    */
   container.appendChild(campo);
 }
 
+/* ================================================= */
+/* CRIAR PLANILHA */
+/* ================================================= */
+
 /*
-    cria uma planilha de verdade
+    recebe as informações do modal
+    e cria a nova planilha.
 */
 function criarPlanilha(event) {
   /*
-        impede o formulário
-        de atualizar a página
+        evita que o formulário
+        atualize a página.
     */
   event.preventDefault();
 
-  /*
-        pega o nome digitado
-    */
   const nome = document.getElementById("nomePlanilha").value.trim();
 
-  /*
-        pega o formato escolhido
-    */
   const tipo = document.getElementById("tipoExportacao").value;
 
-  /*
-        pega todos os campos criados
-    */
-  const campos = document.querySelectorAll(".campoNovo");
+  const modeloId = document.getElementById("modeloSelecionado").value;
+
+  let colunas = [];
+
+  let linhas = [];
 
   /*
-        cria uma lista vazia
-        para guardar as colunas
+        CASO 1:
+        modelo pronto.
     */
-  const colunas = [];
+  if (modeloId !== "vazio") {
+    const modelo = obterModelo(modeloId);
 
-  /*
-        passa por cada campo
-    */
-  campos.forEach((campo) => {
-    /*
-            pega o texto escrito
-        */
-    const valor = campo.value.trim();
+    if (!modelo) {
+      alert("Não foi possível encontrar o modelo.");
 
-    /*
-            se tiver algum texto
-        */
-    if (valor) {
-      /*
-                adiciona na lista
-            */
-      colunas.push(valor);
+      return;
     }
-  });
 
-  /*
-        se não existir nenhuma coluna
-    */
-  if (colunas.length === 0) {
     /*
-            mostra um aviso
+            copia as colunas do modelo.
         */
-    alert("Adicione pelo menos um campo.");
+    colunas = [...modelo.colunas];
 
-    return;
+    /*
+            já cria uma linha vazia
+            para o usuário começar.
+        */
+    linhas = [new Array(colunas.length).fill("")];
+  } else {
+    /*
+            CASO 2:
+            planilha em branco.
+        */
+    const campos = document.querySelectorAll(".campoNovo");
+
+    campos.forEach((campo) => {
+      const valor = campo.value.trim();
+
+      if (valor) {
+        colunas.push(valor);
+      }
+    });
+
+    /*
+            não permite criar
+            uma planilha sem colunas.
+        */
+    if (colunas.length === 0) {
+      alert("Adicione pelo menos um campo.");
+
+      return;
+    }
   }
 
   /*
-        cria o objeto da nova planilha
+        cria o objeto da nova planilha.
+
+        todas as informações importantes
+        ficam guardadas aqui.
     */
   const novaPlanilha = {
     /*
-            cria um número único
-            para identificar a planilha
+            Date.now cria um número praticamente
+            único usando o horário atual.
         */
     id: Date.now().toString(),
 
-    /*
-            nome da planilha
-        */
     nome: nome || "Sem título",
 
-    /*
-            excel ou google sheets
-        */
     tipo: tipo,
 
-    /*
-            nomes das colunas
-        */
+    modelo: modeloId,
+
     colunas: colunas,
 
-    /*
-            começa sem nenhum registro
-        */
-    linhas: [],
+    linhas: linhas,
 
-    /*
-            guarda a data de criação
-        */
     criadaEm: new Date().toISOString(),
 
-    /*
-            coloca a personalização inicial
-        */
     personalizacao: personalizacaoPadrao(),
   };
 
   /*
-        coloca a planilha na lista
+        calcula valores iniciais
+        caso o modelo possua fórmulas.
+    */
+  atualizarTodosCalculos(novaPlanilha);
+
+  /*
+        adiciona na lista.
     */
   planilhas.push(novaPlanilha);
 
   /*
-        salva
+        salva.
     */
   salvar();
 
   /*
-        fecha a janela
+        fecha modal.
     */
   modalCriacao.close();
 
   /*
-        abre a planilha recém-criada
+        abre a planilha recém-criada.
     */
   abrirPlanilha(novaPlanilha.id);
 }
 
 /* ================================================= */
-/* ABRIR E MOSTRAR PLANILHA */
+/* CÁLCULOS DOS MODELOS */
 /* ================================================= */
 
 /*
-    abre uma planilha pelo id
+    essa é a principal função
+    de cálculos automáticos.
+
+    ela recebe:
+
+    planilha
+        planilha que queremos calcular.
+
+    indiceLinha
+        qual linha deve ser recalculada.
 */
+function atualizarCalculosModelo(planilha, indiceLinha) {
+  const linha = planilha.linhas[indiceLinha];
+
+  if (!linha) {
+    return;
+  }
+
+  /* ================================================= */
+  /* NOTAS ESCOLARES */
+  /* ================================================= */
+
+  if (planilha.modelo === "notas") {
+    /*
+            verifica se as três notas existem.
+        */
+    const completas = [1, 2, 3].every((indice) => temValor(linha[indice]));
+
+    /*
+            se faltar alguma nota,
+            não calcula.
+        */
+    if (!completas) {
+      linha[4] = "";
+
+      linha[5] = "";
+
+      return;
+    }
+
+    /*
+            soma as três notas
+            e divide por três.
+        */
+    const media = (numero(linha[1]) + numero(linha[2]) + numero(linha[3])) / 3;
+
+    linha[4] = arredondar(media);
+
+    /*
+            nesse modelo usamos:
+
+            média 6 ou maior = aprovado.
+        */
+    linha[5] = media >= 6 ? "Aprovado" : "Reprovado";
+
+    return;
+  }
+
+  /* ================================================= */
+  /* FREQUÊNCIA ESCOLAR */
+  /* ================================================= */
+
+  if (planilha.modelo === "frequencia") {
+    /*
+            precisamos do total de aulas
+            e das faltas.
+        */
+    if (!temValor(linha[1]) || !temValor(linha[2])) {
+      linha[3] = "";
+
+      linha[4] = "";
+
+      linha[5] = "";
+
+      return;
+    }
+
+    const aulas = numero(linha[1]);
+
+    const faltas = numero(linha[2]);
+
+    /*
+            presenças =
+            aulas - faltas.
+        */
+    const presencas = Math.max(aulas - faltas, 0);
+
+    linha[3] = arredondar(presencas);
+
+    if (aulas <= 0) {
+      linha[4] = "";
+
+      linha[5] = "";
+
+      return;
+    }
+
+    /*
+            porcentagem de frequência.
+        */
+    const frequencia = (presencas / aulas) * 100;
+
+    linha[4] = arredondar(frequencia);
+
+    /*
+            75% ou mais:
+            Regular
+
+            abaixo:
+            Atenção
+        */
+    linha[5] = frequencia >= 75 ? "Regular" : "Atenção";
+
+    return;
+  }
+
+  /* ================================================= */
+  /* ORÇAMENTO */
+  /* ================================================= */
+
+  if (planilha.modelo === "orcamento") {
+    /*
+            precisa ter quantidade
+            e valor unitário.
+        */
+    if (!temValor(linha[1]) || !temValor(linha[2])) {
+      linha[3] = "";
+
+      return;
+    }
+
+    /*
+            total =
+            quantidade × valor unitário.
+        */
+    linha[3] = arredondar(numero(linha[1]) * numero(linha[2]));
+
+    return;
+  }
+
+  /* ================================================= */
+  /* ESTOQUE */
+  /* ================================================= */
+
+  if (planilha.modelo === "estoque") {
+    /*
+            VALOR EM ESTOQUE
+
+            quantidade × custo unitário
+        */
+    if (temValor(linha[1]) && temValor(linha[2])) {
+      linha[4] = arredondar(numero(linha[1]) * numero(linha[2]));
+    } else {
+      linha[4] = "";
+    }
+
+    /*
+            LUCRO POR UNIDADE
+
+            preço de venda - custo
+        */
+    if (temValor(linha[2]) && temValor(linha[3])) {
+      linha[5] = arredondar(numero(linha[3]) - numero(linha[2]));
+    } else {
+      linha[5] = "";
+    }
+
+    /*
+            POTENCIAL DE VENDA
+
+            quantidade × preço de venda
+        */
+    if (temValor(linha[1]) && temValor(linha[3])) {
+      linha[6] = arredondar(numero(linha[1]) * numero(linha[3]));
+    } else {
+      linha[6] = "";
+    }
+
+    return;
+  }
+
+  /* ================================================= */
+  /* VENDAS E COMISSÃO */
+  /* ================================================= */
+
+  if (planilha.modelo === "vendas") {
+    /*
+            TOTAL DA VENDA
+
+            quantidade × valor unitário
+        */
+    if (temValor(linha[2]) && temValor(linha[3])) {
+      linha[4] = arredondar(numero(linha[2]) * numero(linha[3]));
+    } else {
+      linha[4] = "";
+    }
+
+    /*
+            COMISSÃO
+
+            total × porcentagem / 100
+        */
+    if (temValor(linha[4]) && temValor(linha[5])) {
+      linha[6] = arredondar(numero(linha[4]) * (numero(linha[5]) / 100));
+    } else {
+      linha[6] = "";
+    }
+
+    return;
+  }
+
+  /* ================================================= */
+  /* PLANO DE ESTUDOS */
+  /* ================================================= */
+
+  if (planilha.modelo === "estudos") {
+    if (!temValor(linha[3]) || !temValor(linha[4])) {
+      linha[5] = "";
+
+      return;
+    }
+
+    const planejadas = numero(linha[3]);
+
+    const estudadas = numero(linha[4]);
+
+    if (planejadas <= 0) {
+      linha[5] = "";
+
+      return;
+    }
+
+    /*
+            progresso =
+
+            horas estudadas
+            ---------------- × 100
+            horas planejadas
+        */
+    linha[5] = arredondar((estudadas / planejadas) * 100);
+  }
+}
+
+/*
+    recalcula TODAS as linhas
+    de uma planilha.
+*/
+function atualizarTodosCalculos(planilha = planilhaAtual) {
+  if (!planilha) {
+    return;
+  }
+
+  planilha.linhas.forEach((linha, indice) => {
+    atualizarCalculosModelo(planilha, indice);
+  });
+}
+
+/* ================================================= */
+/* ABRIR PLANILHA */
+/* ================================================= */
+
 function abrirPlanilha(id) {
   /*
-        procura a planilha certa
+        procura a planilha
+        usando seu ID.
     */
   planilhaAtual = planilhas.find((planilha) => planilha.id === id);
 
-  /*
-        se não encontrar
-        para a função
-    */
   if (!planilhaAtual) {
     return;
   }
 
   /*
-        se for uma planilha antiga
-        sem personalização
+        corrige planilhas antigas.
     */
   if (!planilhaAtual.personalizacao) {
-    /*
-            adiciona o padrão
-        */
     planilhaAtual.personalizacao = personalizacaoPadrao();
+  }
 
-    salvar();
+  if (!planilhaAtual.modelo) {
+    planilhaAtual.modelo = "vazio";
   }
 
   /*
-        esconde o dashboard
+        recalcula tudo antes de abrir.
+    */
+  atualizarTodosCalculos(planilhaAtual);
+
+  salvar();
+
+  /*
+        troca dashboard pelo editor.
     */
   dashboard.classList.add("escondido");
 
-  /*
-        mostra o editor
-    */
   editor.classList.remove("escondido");
 
   /*
-        coloca o nome da planilha
-        no campo do editor
+        coloca o nome no editor.
     */
   document.getElementById("nomePlanilhaEditor").value = planilhaAtual.nome;
 
   /*
-        mostra o tipo da planilha
+        mostra o formato.
     */
   document.getElementById("tipoPlanilha").textContent =
     "Formato: " + nomeTipo(planilhaAtual.tipo);
 
   /*
-        carrega as cores salvas
+        mostra o nome do modelo.
+    */
+  const textoModelo = document.getElementById("textoModeloEditor");
+
+  if (planilhaAtual.modelo && planilhaAtual.modelo !== "vazio") {
+    textoModelo.textContent = "Modelo: " + nomeModelo(planilhaAtual.modelo);
+  } else {
+    textoModelo.textContent = "Editando planilha";
+  }
+
+  /*
+        carrega visual.
     */
   carregarPersonalizacao();
 
   /*
-        desenha a tabela
+        cria a tabela.
     */
   montarTabela();
 }
 
-/*
-    essa função desenha a tabela
-    dentro da página
-*/
+/* ================================================= */
+/* MONTAR TABELA */
+/* ================================================= */
+
 function montarTabela() {
-  /*
-        se não tiver planilha aberta
-        não faz nada
-    */
   if (!planilhaAtual) {
     return;
   }
 
   /*
-        limpa os títulos antigos
+        garante que os cálculos
+        estejam corretos.
+    */
+  atualizarTodosCalculos();
+
+  /*
+        limpa tabela antiga.
     */
   cabecalhoTabela.innerHTML = "";
 
-  /*
-        limpa os registros antigos
-    */
   corpoTabela.innerHTML = "";
 
-  /*
-        passa por todas as colunas
-    */
+  /* ================================================= */
+  /* CABEÇALHO */
+  /* ================================================= */
+
   planilhaAtual.colunas.forEach((coluna, indice) => {
-    /*
-                cria uma célula de título
-            */
     const th = document.createElement("th");
 
     /*
-                coloca o nome da coluna
-            */
+                    nome normal da coluna.
+                */
     th.textContent = coluna;
 
     /*
-                mostra uma dica
-                quando passa o mouse
-            */
-    th.title = "Clique duas vezes para renomear";
+                    se for calculada,
+                    colocamos ∑.
+                */
+    if (ehColunaCalculada(indice)) {
+      th.textContent = "∑ " + coluna;
 
-    /*
-                se der dois cliques
-                no nome da coluna
-            */
-    th.ondblclick = () => {
+      th.title = "Calculado automaticamente.";
+    } else {
       /*
-                        permite renomear
+                        colunas normais podem
+                        ser renomeadas com dois cliques.
                     */
-      renomearColuna(indice);
-    };
+      th.title = "Clique duas vezes para renomear.";
 
-    /*
-                coloca o título na tabela
-            */
+      th.ondblclick = () => {
+        renomearColuna(indice);
+      };
+    }
+
     cabecalhoTabela.appendChild(th);
   });
 
   /*
-        cria a coluna chamada Ações
+        cria coluna Ações.
     */
   const thAcoes = document.createElement("th");
 
@@ -657,132 +1619,437 @@ function montarTabela() {
 
   thAcoes.className = "coluna-acoes";
 
-  /*
-        coloca a coluna de ações
-        no cabeçalho
-    */
   cabecalhoTabela.appendChild(thAcoes);
 
-  /*
-        agora passa por todos os registros
-    */
+  /* ================================================= */
+  /* LINHAS */
+  /* ================================================= */
+
   planilhaAtual.linhas.forEach((linha, indiceLinha) => {
     /*
-                cria uma linha nova
-            */
+                    cria uma linha <tr>.
+                */
     const tr = document.createElement("tr");
 
     /*
-                passa por cada coluna
-            */
+                    cria uma célula
+                    para cada coluna.
+                */
     planilhaAtual.colunas.forEach((coluna, indiceColuna) => {
-      /*
-                        cria uma célula
-                    */
       const td = document.createElement("td");
 
-      /*
-                        cria um campo onde
-                        podemos escrever
-                    */
       const input = document.createElement("input");
 
       /*
-                        coloca o valor salvo
-                        dentro da célula
-                    */
+                                mostra valor salvo.
+                            */
       input.value = linha[indiceColuna] ?? "";
 
-      /*
-                        cria um texto de ajuda
-                    */
-      input.placeholder = "Digite " + coluna.toLowerCase();
+      const calculada = ehColunaCalculada(indiceColuna);
 
       /*
-                        toda vez que o usuário digitar
-                    */
-      input.addEventListener("input", (event) => {
-        /*
-                                salva o novo texto
-                                naquela célula
+                                CAMPO CALCULADO
                             */
-        planilhaAtual.linhas[indiceLinha][indiceColuna] = event.target.value;
+      if (calculada) {
+        /*
+                                    bloqueia edição.
+                                */
+        input.readOnly = true;
+
+        input.classList.add("campo-calculado");
+
+        input.title = "Calculado automaticamente pelo AeroGrid.";
+      } else {
+        /*
+                                    CAMPO NORMAL
+                                */
+        input.placeholder = "Digite " + coluna.toLowerCase();
 
         /*
-                                salva no navegador
-                            */
-        salvar();
-      });
+                                    sempre que o usuário digita...
+                                */
+        input.addEventListener("input", (event) => {
+          /*
+                                            salva o valor digitado.
+                                        */
+          planilhaAtual.linhas[indiceLinha][indiceColuna] = event.target.value;
 
-      /*
-                        coloca o input
-                        dentro da célula
-                    */
+          /*
+                                            recalcula aquela linha.
+                                        */
+          atualizarCalculosModelo(planilhaAtual, indiceLinha);
+
+          /*
+                                            atualiza os valores automáticos
+                                            na tela.
+                                        */
+          atualizarCelulasCalculadasDaLinha(tr, indiceLinha);
+
+          /*
+                                            salva.
+                                        */
+          salvar();
+
+          /*
+                                            atualiza o resumo.
+                                        */
+          montarResumoModelo();
+        });
+      }
+
       td.appendChild(input);
 
-      /*
-                        coloca a célula
-                        dentro da linha
-                    */
       tr.appendChild(td);
     });
 
-    /*
-                cria a célula onde
-                fica o botão de excluir
-            */
+    /* ================================================= */
+    /* BOTÃO EXCLUIR LINHA */
+    /* ================================================= */
+
     const tdExcluir = document.createElement("td");
 
     tdExcluir.className = "coluna-acoes";
 
-    /*
-                cria o botão
-            */
     const botao = document.createElement("button");
 
-    /*
-                coloca a lixeira
-            */
     botao.textContent = "🗑️";
 
-    /*
-                mostra uma dica
-            */
     botao.title = "Excluir registro";
 
-    /*
-                quando clicar
-            */
     botao.onclick = () => {
-      /*
-                        apaga a linha
-                    */
       excluirLinha(indiceLinha);
     };
 
-    /*
-                coloca o botão
-                dentro da célula
-            */
     tdExcluir.appendChild(botao);
 
-    /*
-                coloca a célula
-                dentro da linha
-            */
     tr.appendChild(tdExcluir);
 
-    /*
-                coloca a linha
-                dentro da tabela
-            */
     corpoTabela.appendChild(tr);
   });
 
   /*
-        aplica as cores escolhidas
+        aplica cores.
     */
   aplicarPersonalizacao();
+
+  /*
+        atualiza painel de resultados.
+    */
+  montarResumoModelo();
+}
+
+/*
+    atualiza apenas as células automáticas
+    da linha que acabou de ser alterada.
+
+    assim não precisamos redesenhar
+    a tabela inteira a cada tecla.
+*/
+function atualizarCelulasCalculadasDaLinha(tr, indiceLinha) {
+  const inputs = tr.querySelectorAll("td input");
+
+  inputs.forEach((input, indice) => {
+    if (ehColunaCalculada(indice)) {
+      input.value = planilhaAtual.linhas[indiceLinha][indice] ?? "";
+    }
+  });
+}
+
+/* ================================================= */
+/* RESUMO DOS MODELOS */
+/* ================================================= */
+
+/*
+    cria um card de resultado.
+
+    exemplo:
+
+    Saldo
+    R$ 1.500,00
+*/
+function criarCardResumo(titulo, valor, detalhe = "") {
+  return `
+
+        <article class="card-resumo">
+
+            <small>
+                ${titulo}
+            </small>
+
+
+            <strong>
+                ${valor}
+            </strong>
+
+
+            ${
+              detalhe
+                ? `
+                        <span>
+                            ${detalhe}
+                        </span>
+                    `
+                : ""
+            }
+
+        </article>
+
+    `;
+}
+
+/*
+    calcula e mostra os resultados
+    gerais de cada modelo.
+*/
+function montarResumoModelo() {
+  if (!planilhaAtual || !resumoModelo) {
+    return;
+  }
+
+  const modelo = obterModelo(planilhaAtual.modelo);
+
+  /*
+        planilhas em branco
+        não possuem resumo automático.
+    */
+  if (!modelo || !modelo.resumo) {
+    resumoModelo.classList.add("escondido");
+
+    resumoModelo.innerHTML = "";
+
+    return;
+  }
+
+  atualizarTodosCalculos();
+
+  let conteudo = "";
+
+  /* ================================================= */
+  /* FINANCEIRO */
+  /* ================================================= */
+
+  if (modelo.resumo === "financeiro") {
+    let entradas = 0;
+
+    let saidas = 0;
+
+    planilhaAtual.linhas.forEach((linha) => {
+      const tipo = normalizarTexto(linha[2]);
+
+      const valor = numero(linha[3]);
+
+      /*
+                        reconhece palavras relacionadas
+                        a dinheiro entrando.
+                    */
+      if (
+        tipo.includes("entrada") ||
+        tipo.includes("receita") ||
+        tipo.includes("ganho")
+      ) {
+        entradas += valor;
+      }
+
+      /*
+                        reconhece dinheiro saindo.
+                    */
+      if (
+        tipo.includes("saida") ||
+        tipo.includes("despesa") ||
+        tipo.includes("gasto")
+      ) {
+        saidas += valor;
+      }
+    });
+
+    const saldo = entradas - saidas;
+
+    conteudo += criarCardResumo("Entradas", dinheiro(entradas));
+
+    conteudo += criarCardResumo("Saídas", dinheiro(saidas));
+
+    conteudo += criarCardResumo("Saldo", dinheiro(saldo));
+  }
+
+  /* ================================================= */
+  /* ORÇAMENTO */
+  /* ================================================= */
+
+  if (modelo.resumo === "orcamento") {
+    /*
+            soma todos os totais
+            da coluna 3.
+        */
+    const total = planilhaAtual.linhas.reduce((soma, linha) => {
+      return soma + numero(linha[3]);
+    }, 0);
+
+    conteudo += criarCardResumo("Valor total", dinheiro(total));
+
+    /*
+            conta quantos itens
+            foram preenchidos.
+        */
+    conteudo += criarCardResumo(
+      "Itens",
+      planilhaAtual.linhas.filter((linha) => temValor(linha[0])).length,
+    );
+  }
+
+  /* ================================================= */
+  /* ESTOQUE */
+  /* ================================================= */
+
+  if (modelo.resumo === "estoque") {
+    let custo = 0;
+
+    let potencial = 0;
+
+    planilhaAtual.linhas.forEach((linha) => {
+      custo += numero(linha[4]);
+
+      potencial += numero(linha[6]);
+    });
+
+    conteudo += criarCardResumo("Custo do estoque", dinheiro(custo));
+
+    conteudo += criarCardResumo("Potencial de venda", dinheiro(potencial));
+
+    conteudo += criarCardResumo("Lucro potencial", dinheiro(potencial - custo));
+  }
+
+  /* ================================================= */
+  /* VENDAS */
+  /* ================================================= */
+
+  if (modelo.resumo === "vendas") {
+    let vendas = 0;
+
+    let comissoes = 0;
+
+    planilhaAtual.linhas.forEach((linha) => {
+      vendas += numero(linha[4]);
+
+      comissoes += numero(linha[6]);
+    });
+
+    conteudo += criarCardResumo("Total vendido", dinheiro(vendas));
+
+    conteudo += criarCardResumo("Comissões", dinheiro(comissoes));
+  }
+
+  /* ================================================= */
+  /* NOTAS */
+  /* ================================================= */
+
+  if (modelo.resumo === "notas") {
+    /*
+            pega apenas alunos
+            que já possuem média.
+        */
+    const medias = planilhaAtual.linhas
+      .filter((linha) => temValor(linha[4]))
+      .map((linha) => numero(linha[4]));
+
+    /*
+            conta aprovados.
+        */
+    const aprovados = planilhaAtual.linhas.filter(
+      (linha) => linha[5] === "Aprovado",
+    ).length;
+
+    /*
+            conta reprovados.
+        */
+    const reprovados = planilhaAtual.linhas.filter(
+      (linha) => linha[5] === "Reprovado",
+    ).length;
+
+    /*
+            média geral da turma.
+        */
+    const mediaTurma =
+      medias.length > 0
+        ? arredondar(
+            medias.reduce(
+              (soma, media) => soma + media,
+
+              0,
+            ) / medias.length,
+          )
+        : 0;
+
+    conteudo += criarCardResumo("Média da turma", mediaTurma);
+
+    conteudo += criarCardResumo("Aprovados", aprovados);
+
+    conteudo += criarCardResumo("Reprovados", reprovados);
+  }
+
+  /* ================================================= */
+  /* FREQUÊNCIA */
+  /* ================================================= */
+
+  if (modelo.resumo === "frequencia") {
+    const frequencias = planilhaAtual.linhas
+      .filter((linha) => temValor(linha[4]))
+      .map((linha) => numero(linha[4]));
+
+    const media =
+      frequencias.length > 0
+        ? arredondar(
+            frequencias.reduce(
+              (soma, valor) => soma + valor,
+
+              0,
+            ) / frequencias.length,
+          )
+        : 0;
+
+    const atencao = planilhaAtual.linhas.filter(
+      (linha) => linha[5] === "Atenção",
+    ).length;
+
+    conteudo += criarCardResumo("Frequência média", media + "%");
+
+    conteudo += criarCardResumo("Em atenção", atencao);
+  }
+
+  /* ================================================= */
+  /* PLANO DE ESTUDOS */
+  /* ================================================= */
+
+  if (modelo.resumo === "estudos") {
+    let planejadas = 0;
+
+    let estudadas = 0;
+
+    planilhaAtual.linhas.forEach((linha) => {
+      planejadas += numero(linha[3]);
+
+      estudadas += numero(linha[4]);
+    });
+
+    const progresso =
+      planejadas > 0 ? arredondar((estudadas / planejadas) * 100) : 0;
+
+    conteudo += criarCardResumo("Horas planejadas", planejadas);
+
+    conteudo += criarCardResumo("Horas estudadas", estudadas);
+
+    conteudo += criarCardResumo("Progresso geral", progresso + "%");
+  }
+
+  /*
+        coloca todos os cards
+        dentro da área de resumo.
+    */
+  resumoModelo.innerHTML = conteudo;
+
+  /*
+        mostra a área.
+    */
+  resumoModelo.classList.remove("escondido");
 }
 
 /* ================================================= */
@@ -790,7 +2057,7 @@ function montarTabela() {
 /* ================================================= */
 
 /*
-    adiciona um novo registro
+    adiciona um novo registro.
 */
 function adicionarLinha() {
   if (!planilhaAtual) {
@@ -798,51 +2065,30 @@ function adicionarLinha() {
   }
 
   /*
-        cria uma linha vazia
-
-        a quantidade de espaços
-        é igual à quantidade de colunas
+        cria uma linha com a mesma
+        quantidade de campos da planilha.
     */
   const novaLinha = new Array(planilhaAtual.colunas.length).fill("");
 
-  /*
-        coloca a nova linha
-        na planilha
-    */
   planilhaAtual.linhas.push(novaLinha);
 
-  /*
-        salva
-    */
   salvar();
 
-  /*
-        desenha a tabela novamente
-    */
   montarTabela();
 }
 
 /*
-    apaga uma linha
+    remove uma linha.
 */
 function excluirLinha(indice) {
   if (!planilhaAtual) {
     return;
   }
 
-  /*
-        remove uma linha da lista
-    */
   planilhaAtual.linhas.splice(indice, 1);
 
-  /*
-        salva
-    */
   salvar();
 
-  /*
-        atualiza a tabela
-    */
   montarTabela();
 }
 
@@ -851,84 +2097,58 @@ function excluirLinha(indice) {
 /* ================================================= */
 
 /*
-    abre a janela para criar
-    uma nova coluna
+    abre o modal
+    para criar uma coluna nova.
 */
 function adicionarColuna() {
   if (!planilhaAtual) {
     return;
   }
 
-  /*
-        limpa o nome antigo
-    */
   document.getElementById("novoCampo").value = "";
 
-  /*
-        abre a janela
-    */
   modalCampo.showModal();
 }
 
 /*
-    salva uma coluna nova
+    salva a nova coluna.
 */
 function salvarNovaColuna(event) {
-  /*
-        impede a página de atualizar
-    */
   event.preventDefault();
 
   if (!planilhaAtual) {
     return;
   }
 
-  /*
-        pega o nome escrito
-    */
   const nome = document.getElementById("novoCampo").value.trim();
 
-  /*
-        se estiver vazio
-        para aqui
-    */
   if (!nome) {
     return;
   }
 
   /*
-        adiciona o nome da coluna
+        coloca a coluna no final.
     */
   planilhaAtual.colunas.push(nome);
 
   /*
-        como apareceu uma coluna nova,
-        todas as linhas precisam receber
-        uma célula vazia nova
+        cada linha existente também precisa
+        receber uma nova célula vazia.
     */
   planilhaAtual.linhas.forEach((linha) => {
     linha.push("");
   });
 
-  /*
-        salva
-    */
   salvar();
 
-  /*
-        fecha a janela
-    */
   modalCampo.close();
 
-  /*
-        atualiza a tabela
-    */
   montarTabela();
 }
 
 /*
-    permite mudar o nome
-    de uma coluna
+    permite renomear uma coluna
+    com dois cliques.
 */
 function renomearColuna(indice) {
   if (!planilhaAtual) {
@@ -936,50 +2156,33 @@ function renomearColuna(indice) {
   }
 
   /*
-        pega o nome atual
+        colunas calculadas não podem
+        ser renomeadas.
     */
+  if (ehColunaCalculada(indice)) {
+    alert("Este campo faz parte de um cálculo automático.");
+
+    return;
+  }
+
   const atual = planilhaAtual.colunas[indice];
 
-  /*
-        abre uma caixinha perguntando
-        o novo nome
-    */
   const novo = prompt("Novo nome do campo:", atual);
 
-  /*
-        se cancelar
-        não faz nada
-    */
   if (!novo) {
     return;
   }
 
-  /*
-        tira espaços extras
-    */
   const nome = novo.trim();
 
-  /*
-        não deixa colocar nome vazio
-    */
   if (!nome) {
     return;
   }
 
-  /*
-        troca o nome antigo
-        pelo novo
-    */
   planilhaAtual.colunas[indice] = nome;
 
-  /*
-        salva
-    */
   salvar();
 
-  /*
-        atualiza a tabela
-    */
   montarTabela();
 }
 
@@ -987,37 +2190,17 @@ function renomearColuna(indice) {
 /* NOME DA PLANILHA */
 /* ================================================= */
 
-/*
-    muda o nome da planilha
-*/
 function alterarNomePlanilha() {
   if (!planilhaAtual) {
     return;
   }
 
-  /*
-        pega o campo onde
-        o nome aparece
-    */
   const input = document.getElementById("nomePlanilhaEditor");
 
-  /*
-        salva o novo nome
-
-        se estiver vazio,
-        usa "Sem título"
-    */
   planilhaAtual.nome = input.value.trim() || "Sem título";
 
-  /*
-        mostra o nome correto
-        no campo
-    */
   input.value = planilhaAtual.nome;
 
-  /*
-        salva
-    */
   salvar();
 }
 
@@ -1025,43 +2208,27 @@ function alterarNomePlanilha() {
 /* EXCLUIR PLANILHA */
 /* ================================================= */
 
-/*
-    apaga uma planilha inteira
-*/
 function excluirPlanilha(event, id) {
   /*
-        impede que o clique no botão
-        também abra o card
+        impede que clicar em Excluir
+        também abra a planilha.
     */
   event.stopPropagation();
 
-  /*
-        pergunta se realmente
-        quer apagar
-    */
   const confirmar = confirm("Deseja excluir esta planilha?");
 
-  /*
-        se escolher cancelar
-    */
   if (!confirmar) {
     return;
   }
 
   /*
-        cria uma lista nova
-        sem a planilha apagada
+        cria uma nova lista
+        sem a planilha excluída.
     */
   planilhas = planilhas.filter((planilha) => planilha.id !== id);
 
-  /*
-        salva a nova lista
-    */
   salvar();
 
-  /*
-        atualiza o dashboard
-    */
   carregarDashboard();
 }
 
@@ -1070,26 +2237,16 @@ function excluirPlanilha(event, id) {
 /* ================================================= */
 
 /*
-    coloca nas caixinhas de personalização
-    as opções que já estavam salvas
+    coloca nos controles
+    as cores salvas da planilha.
 */
 function carregarPersonalizacao() {
   if (!planilhaAtual) {
     return;
   }
 
-  /*
-        colocamos a personalização
-        dentro da letra p
-
-        isso deixa o código menor
-    */
   const p = planilhaAtual.personalizacao;
 
-  /*
-        coloca cada configuração
-        no lugar certo
-    */
   document.getElementById("corCabecalho").value = p.corCabecalho;
 
   document.getElementById("corTextoCabecalho").value = p.corTextoCabecalho;
@@ -1108,133 +2265,71 @@ function carregarPersonalizacao() {
 }
 
 /*
-    salva as mudanças
-    que o usuário escolheu
+    pega as escolhas feitas
+    pelo usuário e salva.
 */
 function alterarPersonalizacao() {
   if (!planilhaAtual) {
     return;
   }
 
-  /*
-        pega todos os valores
-        escolhidos na tela
-    */
   planilhaAtual.personalizacao = {
-    /*
-            cor do cabeçalho
-        */
     corCabecalho: document.getElementById("corCabecalho").value,
 
-    /*
-            cor do texto do cabeçalho
-        */
     corTextoCabecalho: document.getElementById("corTextoCabecalho").value,
 
-    /*
-            cor das informações
-        */
     corTexto: document.getElementById("corTexto").value,
 
-    /*
-            fundo das células
-        */
     corCelulas: document.getElementById("corCelulas").value,
 
-    /*
-            cor das bordas
-        */
     corBorda: document.getElementById("corBorda").value,
 
-    /*
-            grade ou tabela
-        */
     estilo: document.getElementById("estiloPlanilha").value,
 
-    /*
-            tamanho da fonte
-        */
     tamanhoFonte: document.getElementById("tamanhoFonte").value,
 
-    /*
-            alinhamento
-        */
     alinhamento: document.getElementById("alinhamento").value,
   };
 
-  /*
-        salva as novas configurações
-    */
   salvar();
 
-  /*
-        mostra a mudança na hora
-    */
   aplicarPersonalizacao();
 }
 
 /*
-    aplica as cores
-    dentro da tabela do site
+    aplica as escolhas
+    diretamente na tabela.
 */
 function aplicarPersonalizacao() {
   if (!planilhaAtual) {
     return;
   }
 
-  /*
-        pega a configuração atual
-    */
   const p = planilhaAtual.personalizacao;
 
-  /*
-        pega todos os títulos
-    */
   const cabecalhos = cabecalhoTabela.querySelectorAll("th");
 
-  /*
-        pega todas as células
-    */
   const celulas = corpoTabela.querySelectorAll("td");
 
-  /*
-        pega os campos onde digitamos
-    */
   const inputs = corpoTabela.querySelectorAll("input");
 
   /*
-        muda o visual dos títulos
+        cabeçalhos.
     */
   cabecalhos.forEach((th) => {
-    /*
-                muda o fundo
-            */
     th.style.backgroundColor = p.corCabecalho;
 
-    /*
-                muda a cor da letra
-            */
     th.style.color = p.corTextoCabecalho;
 
-    /*
-                muda o tamanho da letra
-            */
     th.style.fontSize = p.tamanhoFonte + "px";
 
-    /*
-                muda a posição do texto
-            */
     th.style.textAlign = p.alinhamento;
 
-    /*
-                muda a cor da borda
-            */
     th.style.borderColor = p.corBorda;
   });
 
   /*
-        muda o fundo e borda
-        das células
+        células.
     */
   celulas.forEach((td) => {
     td.style.backgroundColor = p.corCelulas;
@@ -1243,92 +2338,53 @@ function aplicarPersonalizacao() {
   });
 
   /*
-        muda o texto digitado
+        campos.
     */
   inputs.forEach((input) => {
-    /*
-                cor da letra
-            */
     input.style.color = p.corTexto;
 
-    /*
-                fundo
-            */
     input.style.backgroundColor = p.corCelulas;
 
-    /*
-                tamanho
-            */
     input.style.fontSize = p.tamanhoFonte + "px";
 
-    /*
-                alinhamento
-            */
     input.style.textAlign = p.alinhamento;
   });
 
   /*
-        primeiro tira os dois estilos
-        para não misturar
+        tira estilo anterior.
     */
   tabelaPlanilha.classList.remove("modo-grade", "modo-tabela");
 
   /*
-        se o usuário escolheu tabela
+        escolhe o novo.
     */
   if (p.estilo === "tabela") {
-    /*
-            coloca o modo tabela
-        */
     tabelaPlanilha.classList.add("modo-tabela");
   } else {
-    /*
-            senão usa o modo grade
-        */
     tabelaPlanilha.classList.add("modo-grade");
   }
 }
 
 /*
-    volta todas as configurações
-    para o padrão
+    volta para as cores padrão.
 */
 function restaurarPersonalizacao() {
   if (!planilhaAtual) {
     return;
   }
 
-  /*
-        pergunta antes de mudar
-    */
   const confirmar = confirm("Deseja restaurar o visual padrão?");
 
-  /*
-        se cancelar
-    */
   if (!confirmar) {
     return;
   }
 
-  /*
-        coloca o padrão novamente
-    */
   planilhaAtual.personalizacao = personalizacaoPadrao();
 
-  /*
-        salva
-    */
   salvar();
 
-  /*
-        atualiza as caixinhas
-        de escolha
-    */
   carregarPersonalizacao();
 
-  /*
-        atualiza a tabela
-    */
   aplicarPersonalizacao();
 }
 
@@ -1337,8 +2393,7 @@ function restaurarPersonalizacao() {
 /* ================================================= */
 
 /*
-    escolhe qual tipo de exportação
-    será usado
+    escolhe o método de exportação.
 */
 function exportarPlanilha() {
   if (!planilhaAtual) {
@@ -1346,108 +2401,75 @@ function exportarPlanilha() {
   }
 
   /*
-        verifica se a biblioteca do excel
-        carregou corretamente
+        verifica se a biblioteca
+        foi carregada.
     */
   if (typeof XLSX === "undefined") {
-    /*
-            mostra erro
-        */
     alert("A biblioteca de exportação não foi carregada.");
 
     return;
   }
 
   /*
-        se a planilha for excel
+        recalcula antes de exportar.
     */
+  atualizarTodosCalculos();
+
+  salvar();
+
   if (planilhaAtual.tipo === "excel") {
-    /*
-            exporta para excel
-        */
     exportarExcel();
 
     return;
   }
 
-  /*
-        se for google sheets
-    */
   if (planilhaAtual.tipo === "google") {
-    /*
-            prepara para google sheets
-        */
     exportarGoogleSheets();
   }
 }
 
 /*
-    junta todos os dados
-    em uma lista
+    junta cabeçalho e registros
+    em uma única matriz.
 */
 function obterDadosPlanilha() {
-  return [
-    /*
-            primeira linha:
-            nomes das colunas
-        */
-    planilhaAtual.colunas,
-
-    /*
-            depois:
-            todos os registros
-        */
-    ...planilhaAtual.linhas,
-  ];
+  return [planilhaAtual.colunas, ...planilhaAtual.linhas];
 }
 
 /*
-    limpa o nome do arquivo
-
-    alguns símbolos não podem
-    ser usados no nome de um arquivo
+    remove caracteres proibidos
+    de nomes de arquivos.
 */
 function limparNomeArquivo(nome) {
   return nome.replace(/[<>:"/\\|?*]/g, "").trim() || "planilha";
 }
 
 /*
-    prepara uma cor
-    para o excel
-
-    exemplo:
+    transforma:
 
     #1597e5
 
-    vira
+    em:
 
     1597E5
+
+    porque o Excel usa a cor
+    dessa forma.
 */
 function corExcel(cor) {
-  /*
-        se não existir uma cor
-        usa preto
-    */
   if (!cor) {
     return "000000";
   }
 
-  /*
-        tira o #
-        e deixa tudo maiúsculo
-    */
   return cor.replace("#", "").toUpperCase();
 }
 
 /*
-    cria as bordas
-    que serão colocadas no excel
+    cria as quatro bordas
+    usadas nas células do Excel.
 */
 function criarBorda(cor) {
   return {
-    /*
-            borda de cima
-        */
     top: {
       style: "thin",
 
@@ -1456,9 +2478,6 @@ function criarBorda(cor) {
       },
     },
 
-    /*
-            borda de baixo
-        */
     bottom: {
       style: "thin",
 
@@ -1467,9 +2486,6 @@ function criarBorda(cor) {
       },
     },
 
-    /*
-            borda esquerda
-        */
     left: {
       style: "thin",
 
@@ -1478,9 +2494,6 @@ function criarBorda(cor) {
       },
     },
 
-    /*
-            borda direita
-        */
     right: {
       style: "thin",
 
@@ -1491,35 +2504,137 @@ function criarBorda(cor) {
   };
 }
 
-/*
-    essa é uma das partes mais importantes
+/* ================================================= */
+/* FÓRMULAS DENTRO DO EXCEL */
+/* ================================================= */
 
-    ela transforma nossos dados
-    em uma planilha de excel de verdade
+/*
+    além de calcular dentro do site,
+    também colocamos fórmulas reais no Excel.
+
+    isso significa que depois de baixar,
+    se o usuário alterar os valores no Excel,
+    os resultados continuam calculando.
 */
+function formulaExcelModelo(modelo, linhaExcel, coluna) {
+  /* NOTAS */
+
+  if (modelo === "notas") {
+    /*
+            média.
+        */
+    if (coluna === 4) {
+      return `IF(COUNTA(B${linhaExcel}:D${linhaExcel})=3,AVERAGE(B${linhaExcel}:D${linhaExcel}),"")`;
+    }
+
+    /*
+            situação.
+        */
+    if (coluna === 5) {
+      return `IF(E${linhaExcel}="","",IF(E${linhaExcel}>=6,"Aprovado","Reprovado"))`;
+    }
+  }
+
+  /* FREQUÊNCIA */
+
+  if (modelo === "frequencia") {
+    if (coluna === 3) {
+      return `IF(OR(B${linhaExcel}="",C${linhaExcel}=""),"",MAX(B${linhaExcel}-C${linhaExcel},0))`;
+    }
+
+    if (coluna === 4) {
+      return `IF(B${linhaExcel}>0,D${linhaExcel}/B${linhaExcel}*100,"")`;
+    }
+
+    if (coluna === 5) {
+      return `IF(E${linhaExcel}="","",IF(E${linhaExcel}>=75,"Regular","Atenção"))`;
+    }
+  }
+
+  /* ORÇAMENTO */
+
+  if (modelo === "orcamento" && coluna === 3) {
+    return `IF(OR(B${linhaExcel}="",C${linhaExcel}=""),"",B${linhaExcel}*C${linhaExcel})`;
+  }
+
+  /* ESTOQUE */
+
+  if (modelo === "estoque") {
+    /*
+            quantidade × custo.
+        */
+    if (coluna === 4) {
+      return `IF(OR(B${linhaExcel}="",C${linhaExcel}=""),"",B${linhaExcel}*C${linhaExcel})`;
+    }
+
+    /*
+            venda - custo.
+        */
+    if (coluna === 5) {
+      return `IF(OR(C${linhaExcel}="",D${linhaExcel}=""),"",D${linhaExcel}-C${linhaExcel})`;
+    }
+
+    /*
+            quantidade × preço.
+        */
+    if (coluna === 6) {
+      return `IF(OR(B${linhaExcel}="",D${linhaExcel}=""),"",B${linhaExcel}*D${linhaExcel})`;
+    }
+  }
+
+  /* VENDAS */
+
+  if (modelo === "vendas") {
+    /*
+            total.
+        */
+    if (coluna === 4) {
+      return `IF(OR(C${linhaExcel}="",D${linhaExcel}=""),"",C${linhaExcel}*D${linhaExcel})`;
+    }
+
+    /*
+            comissão.
+        */
+    if (coluna === 6) {
+      return `IF(OR(E${linhaExcel}="",F${linhaExcel}=""),"",E${linhaExcel}*(F${linhaExcel}/100))`;
+    }
+  }
+
+  /* ESTUDOS */
+
+  if (modelo === "estudos" && coluna === 5) {
+    return `IF(D${linhaExcel}>0,E${linhaExcel}/D${linhaExcel}*100,"")`;
+  }
+
+  /*
+        se não existir fórmula
+        para aquela célula.
+    */
+  return null;
+}
+
+/* ================================================= */
+/* CRIAR ARQUIVO EXCEL */
+/* ================================================= */
+
 function criarWorksheet() {
   /*
-        pega os dados
+        atualiza tudo primeiro.
     */
+  atualizarTodosCalculos();
+
   const dados = obterDadosPlanilha();
 
   /*
-        transforma a lista
-        em uma planilha
+        transforma nossos dados
+        em uma planilha Excel.
     */
   const worksheet = XLSX.utils.aoa_to_sheet(dados);
 
-  /*
-        pega a personalização atual
-
-        se não existir,
-        usa o padrão
-    */
   const p = planilhaAtual.personalizacao || personalizacaoPadrao();
 
   /*
-        prepara as cores
-        para o formato do excel
+        prepara as cores.
     */
   const corCabecalho = corExcel(p.corCabecalho);
 
@@ -1532,35 +2647,25 @@ function criarWorksheet() {
   const corBorda = corExcel(p.corBorda);
 
   /*
-        conta quantas linhas existem
+        número de linhas.
 
-        soma 1 porque existe
-        a linha do cabeçalho
+        +1 representa o cabeçalho.
     */
   const quantidadeLinhas = planilhaAtual.linhas.length + 1;
 
-  /*
-        conta quantas colunas existem
-    */
   const quantidadeColunas = planilhaAtual.colunas.length;
 
   /*
-        passa por todas as linhas
+        percorre todas as células.
     */
   for (let linha = 0; linha < quantidadeLinhas; linha++) {
-    /*
-            passa por todas as colunas
-        */
     for (let coluna = 0; coluna < quantidadeColunas; coluna++) {
       /*
-                descobre o endereço
-                daquela célula
-
-                exemplo:
+                cria endereço:
 
                 A1
                 B1
-                C2
+                C2...
             */
       const endereco = XLSX.utils.encode_cell({
         r: linha,
@@ -1568,49 +2673,46 @@ function criarWorksheet() {
         c: coluna,
       });
 
-      /*
-                pega a célula
-            */
       let celula = worksheet[endereco];
 
       /*
-                se a célula estiver vazia,
-                ela pode ainda não existir
+                células vazias podem não existir.
 
-                então criamos ela
+                então criamos para aplicar estilo.
             */
       if (!celula) {
         celula = {
-          /*
-                        valor vazio
-                    */
           v: "",
 
-          /*
-                        diz que é texto
-                    */
           t: "s",
         };
 
-        /*
-                    coloca a célula
-                    dentro da planilha
-                */
         worksheet[endereco] = celula;
       }
 
       /*
-                se for a primeira linha
+                linhas depois do cabeçalho
+                podem receber fórmulas.
+            */
+      if (linha > 0) {
+        const formula = formulaExcelModelo(
+          planilhaAtual.modelo,
+
+          linha + 1,
+
+          coluna,
+        );
+
+        if (formula) {
+          celula.f = formula;
+        }
+      }
+
+      /*
+                CABEÇALHO
             */
       if (linha === 0) {
-        /*
-                    aplica o estilo
-                    do cabeçalho
-                */
         celula.s = {
-          /*
-                        cor de fundo
-                    */
           fill: {
             patternType: "solid",
 
@@ -1619,59 +2721,33 @@ function criarWorksheet() {
             },
           },
 
-          /*
-                        estilo da letra
-                    */
           font: {
             name: "Arial",
 
-            /*
-                            deixa em negrito
-                        */
             bold: true,
 
-            /*
-                            tamanho
-                        */
             sz: Number(p.tamanhoFonte),
 
-            /*
-                            cor
-                        */
             color: {
               rgb: corTextoCabecalho,
             },
           },
 
-          /*
-                        posição do texto
-                    */
           alignment: {
             horizontal: p.alinhamento,
 
             vertical: "center",
 
-            /*
-                            deixa o texto quebrar linha
-                            se ficar muito grande
-                        */
             wrapText: true,
           },
 
-          /*
-                        bordas
-                    */
           border: criarBorda(corBorda),
         };
       } else {
         /*
-                    se não for o cabeçalho,
-                    aplica o estilo das informações
+                    CÉLULAS NORMAIS
                 */
         celula.s = {
-          /*
-                        fundo da célula
-                    */
           fill: {
             patternType: "solid",
 
@@ -1680,9 +2756,6 @@ function criarWorksheet() {
             },
           },
 
-          /*
-                        letra das informações
-                    */
           font: {
             name: "Arial",
 
@@ -1693,9 +2766,6 @@ function criarWorksheet() {
             },
           },
 
-          /*
-                        alinhamento
-                    */
           alignment: {
             horizontal: p.alinhamento,
 
@@ -1704,9 +2774,6 @@ function criarWorksheet() {
             wrapText: true,
           },
 
-          /*
-                        bordas
-                    */
           border: criarBorda(corBorda),
         };
       }
@@ -1714,228 +2781,156 @@ function criarWorksheet() {
   }
 
   /*
-        agora ajustamos automaticamente
-        a largura das colunas
+        ajusta automaticamente
+        a largura das colunas.
     */
   worksheet["!cols"] = planilhaAtual.colunas.map((coluna, indice) => {
-    /*
-                    começa usando
-                    o tamanho do nome da coluna
-                */
     let maior = String(coluna).length;
 
-    /*
-                    olha todas as linhas
-                */
     planilhaAtual.linhas.forEach((linha) => {
-      /*
-                                pega o valor
-                                daquela coluna
-                            */
       const valor = String(linha[indice] ?? "");
 
-      /*
-                                se encontrar um texto maior
-                            */
       if (valor.length > maior) {
-        /*
-                                    usa esse novo tamanho
-                                */
         maior = valor.length;
       }
     });
 
-    /*
-                    devolve a largura da coluna
-                */
     return {
-      /*
-                        adiciona um espacinho extra
-
-                        máximo de 50
-                    */
       wch: Math.min(maior + 4, 50),
     };
   });
 
   /*
-        ajusta a altura das linhas
+        ajusta altura das linhas.
     */
   worksheet["!rows"] = new Array(quantidadeLinhas)
     .fill(null)
     .map((valor, indice) => {
-      /*
-                        se for o cabeçalho
-                        deixa um pouco maior
-                    */
       if (indice === 0) {
         return {
           hpt: 28,
         };
       }
 
-      /*
-                        altura normal
-                    */
       return {
         hpt: 22,
       };
     });
 
-  /*
-        devolve a planilha pronta
-    */
   return worksheet;
 }
 
-/*
-    cria o arquivo excel
-    e faz o download
-*/
+/* ================================================= */
+/* DOWNLOAD */
+/* ================================================= */
+
 function baixarArquivoExcel() {
-  /*
-        cria a planilha com os estilos
-    */
   const worksheet = criarWorksheet();
 
   /*
-        cria um arquivo excel vazio
+        cria uma pasta de trabalho.
     */
   const workbook = XLSX.utils.book_new();
 
   /*
-        coloca nossa planilha
-        dentro do arquivo
+        adiciona nossa planilha
+        dentro do arquivo.
     */
   XLSX.utils.book_append_sheet(workbook, worksheet, "Dados");
 
-  /*
-        cria o nome do arquivo
-    */
   const nomeArquivo = limparNomeArquivo(planilhaAtual.nome) + ".xlsx";
 
   /*
-        faz o download do arquivo
+        cria o arquivo e baixa.
     */
   XLSX.writeFile(workbook, nomeArquivo, {
-    /*
-                formato excel
-            */
     bookType: "xlsx",
 
-    /*
-                ajuda na criação do arquivo
-            */
     type: "binary",
 
-    /*
-                fala para manter estilos
-            */
     cellStyles: true,
 
-    /*
-                deixa o arquivo menor
-            */
     compression: true,
   });
 }
 
 /*
-    exporta diretamente
-    para arquivo excel
+    Excel apenas baixa.
 */
 function exportarExcel() {
-  /*
-        chama a função que baixa
-        o arquivo
-    */
   baixarArquivoExcel();
 }
 
 /*
-    prepara a planilha
-    para usar no google sheets
+    Google Sheets ainda não possui
+    integração direta com a conta do usuário.
+
+    então baixamos o .xlsx
+    e depois abrimos o Google Sheets.
 */
 function exportarGoogleSheets() {
-  /*
-        primeiro baixa o arquivo .xlsx
-    */
   baixarArquivoExcel();
 
-  /*
-        espera meio segundo
-    */
   setTimeout(
     () => {
-      /*
-                pergunta se o usuário
-                quer abrir o google sheets
-            */
       const abrir = confirm(
-        "A planilha foi baixada em .xlsx com a personalização.\n\n" +
+        "A planilha foi baixada em .xlsx com os cálculos.\n\n" +
           "Agora importe esse arquivo no Google Sheets.\n\n" +
           "Use:\n\n" +
           "Arquivo → Importar → Upload\n\n" +
           "Deseja abrir o Google Sheets?",
       );
 
-      /*
-                se escolher sim
-            */
       if (abrir) {
-        /*
-                    abre o google sheets
-                    em uma nova aba
-                */
         window.open("https://sheets.google.com/", "_blank");
       }
     },
 
-    /*
-            espera 500 milissegundos
-        */
     500,
   );
 }
 
 /* ================================================= */
-/* NOME DO FORMATO */
+/* NOMES DOS FORMATOS */
 /* ================================================= */
 
 /*
-    transforma o valor salvo
-    em um nome mais bonito
+    transforma nomes internos
+    em nomes bonitos.
 */
 function nomeTipo(tipo) {
-  /*
-        se for excel
-    */
   if (tipo === "excel") {
     return "Microsoft Excel";
   }
 
-  /*
-        se for google sheets
-    */
   if (tipo === "google") {
     return "Google Sheets";
   }
 
-  /*
-        se aparecer outro valor
-    */
   return "Planilha";
 }
 
 /* ================================================= */
-/* INÍCIO DO SISTEMA */
+/* INICIAR O SISTEMA */
 /* ================================================= */
 
 /*
-    quando a página abre,
-    carrega o dashboard
-
-    isso faz as planilhas salvas
-    aparecerem automaticamente
+    assim que o site abre,
+    mostramos as planilhas salvas.
 */
 carregarDashboard();
+
+/*
+    verifica se a URL possui:
+
+    ?nova=1
+
+    isso acontece quando o usuário
+    clica em "Nova planilha"
+    na página Sobre.
+*/
+const parametros = new URLSearchParams(window.location.search);
+
+if (parametros.get("nova") === "1") {
+  abrirCriacao();
+}
