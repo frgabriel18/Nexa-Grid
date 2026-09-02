@@ -1,3 +1,33 @@
+/*
+=============================================================
+NEXAGRID - STYLE.CSS
+=============================================================
+
+Este arquivo controla toda a aparência do sistema.
+
+ORGANIZAÇÃO PRINCIPAL:
+1. Variáveis de cor do tema claro.
+2. Variáveis sobrescritas quando o tema escuro está ativo.
+3. Menu lateral e navegação.
+4. Dashboard e cards.
+5. Editor, personalização e tabela.
+6. Modais e menus personalizados.
+7. Configurações e página Sobre.
+8. Responsividade para telas menores.
+9. Melhorias recentes: scrollbar temática, painel rápido e selects.
+
+COMO O TEMA ESCURO FUNCIONA:
+O JavaScript coloca data-theme="dark" no elemento <html>.
+O CSS então troca apenas as variáveis de cor. Dessa forma não é
+necessário duplicar todos os estilos.
+
+COMO A FONTE GERAL FUNCIONA:
+O JavaScript altera o font-size do elemento <html>. Como grande parte
+das medidas usa rem, a interface inteira cresce ou diminui de forma
+proporcional.
+=============================================================
+*/
+
 /* ================================================= */
 /* FONTE E CONFIGURAÇÕES GERAIS */
 /* ================================================= */
@@ -147,7 +177,7 @@ aside {
   margin-bottom: 2.4rem;
 }
 
-.logo-aerogrid {
+.logo-nexagrid {
   min-width: 2.9rem;
   width: 2.9rem;
   height: 2.9rem;
@@ -1505,6 +1535,133 @@ html[data-theme="dark"] .modal-notificacao {
 }
 
 /* ================================================= */
+/* MENUS PERSONALIZADOS DAS CONFIGURAÇÕES */
+/* ================================================= */
+
+/*
+    estes menus substituem o dropdown padrão do navegador.
+    assim a lista de opções usa exatamente as cores do tema do NexaGrid.
+*/
+.select-personalizado {
+  width: 100%;
+  position: relative;
+}
+
+.select-personalizado-botao {
+  width: 100%;
+  min-height: 2.75rem;
+
+  padding: 0.72rem 0.85rem;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+
+  border: 1px solid var(--borda);
+  border-radius: 0.6rem;
+
+  color: var(--texto);
+  background: var(--painel-secundario);
+
+  font-size: 0.72rem;
+  text-align: left;
+
+  box-shadow: none;
+}
+
+.select-personalizado-botao:hover,
+.select-personalizado.aberto .select-personalizado-botao {
+  color: var(--texto-forte);
+  border-color: var(--azul);
+  background: var(--painel-hover);
+  transform: none;
+}
+
+.select-personalizado-seta {
+  color: var(--texto-claro);
+  font-size: 0.9rem;
+  transition: transform 0.2s ease;
+}
+
+.select-personalizado.aberto .select-personalizado-seta {
+  transform: rotate(180deg);
+}
+
+.select-personalizado-menu {
+  width: 100%;
+
+  position: absolute;
+  top: calc(100% + 0.4rem);
+  left: 0;
+
+  z-index: 80;
+
+  padding: 0.35rem;
+
+  border: 1px solid var(--borda);
+  border-radius: 0.65rem;
+
+  background: var(--painel);
+
+  box-shadow: 0 0.8rem 2rem rgba(0, 0, 0, 0.16);
+
+  opacity: 0;
+  visibility: hidden;
+
+  transform: translateY(-0.35rem);
+
+  transition:
+    opacity 0.15s ease,
+    transform 0.15s ease,
+    visibility 0.15s ease;
+}
+
+.select-personalizado.aberto .select-personalizado-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.select-personalizado-menu button {
+  width: 100%;
+
+  padding: 0.65rem 0.75rem;
+
+  display: block;
+
+  border: none;
+  border-radius: 0.45rem;
+
+  color: var(--texto);
+  background: transparent;
+
+  font-size: 0.68rem;
+  text-align: left;
+
+  box-shadow: none;
+}
+
+.select-personalizado-menu button:hover {
+  color: var(--texto-forte);
+  background: var(--painel-hover);
+  transform: none;
+}
+
+.select-personalizado-menu button.ativo {
+  color: #ffffff;
+  background: linear-gradient(135deg, var(--azul), var(--verde));
+}
+
+/*
+    no tema escuro o menu usa as mesmas variáveis,
+    então nenhuma lista branca do navegador aparece.
+*/
+html[data-theme="dark"] .select-personalizado-menu {
+  box-shadow: 0 0.9rem 2.2rem rgba(0, 0, 0, 0.38);
+}
+
+/* ================================================= */
 /* RESPONSIVIDADE */
 /* ================================================= */
 
@@ -1640,5 +1797,797 @@ html[data-theme="dark"] .modal-notificacao {
 
   .filtro-modelo {
     width: 100%;
+  }
+}
+
+/* ================================================= */
+/* NEXAGRID V6 - NOVAS FERRAMENTAS */
+/* ================================================= */
+
+/* ações do dashboard */
+.acoes-dashboard {
+  display: flex;
+  gap: 0.55rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.arquivo-escondido {
+  display: none !important;
+}
+
+.barra-dashboard,
+.barra-tabela {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.7rem;
+  margin-bottom: 0.9rem;
+}
+
+.campo-busca {
+  min-width: 0;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0 0.75rem;
+  border: 1px solid var(--borda);
+  border-radius: 0.55rem;
+  background: var(--painel-secundario);
+  color: var(--texto-claro);
+}
+
+.campo-busca input {
+  width: 100%;
+  min-width: 0;
+  height: 2.45rem;
+  border: 0;
+  outline: 0;
+  color: var(--texto);
+  background: transparent;
+  font: inherit;
+}
+
+.barra-dashboard > select,
+.barra-tabela > select {
+  min-width: 10rem;
+  height: 2.45rem;
+  padding: 0 2.1rem 0 0.75rem;
+  border: 1px solid var(--borda);
+  border-radius: 0.55rem;
+  color: var(--texto);
+  background: var(--painel-secundario);
+  font: inherit;
+}
+
+/* gráfico automático */
+.area-grafico {
+  margin-bottom: 1rem;
+  padding: 1rem;
+  border: 1px solid var(--borda);
+  border-radius: 0.75rem;
+  background: var(--painel);
+}
+
+.area-grafico header {
+  margin-bottom: 0.8rem;
+}
+
+.area-grafico h3 {
+  color: var(--texto-forte);
+  font-size: 0.9rem;
+}
+
+.grafico-container {
+  position: relative;
+  width: 100%;
+  height: 19rem;
+}
+
+/* filtros por coluna */
+.linha-filtros th {
+  padding: 0.35rem;
+  background: var(--painel-secundario) !important;
+  color: var(--texto) !important;
+}
+
+.filtro-coluna {
+  width: 100%;
+  min-width: 5.5rem;
+  padding: 0.48rem 0.55rem;
+  border: 1px solid var(--borda);
+  border-radius: 0.4rem;
+  outline: none;
+  color: var(--texto);
+  background: var(--painel);
+  font: inherit;
+  font-size: 0.58rem;
+}
+
+.cabecalho-campo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.4rem;
+}
+
+.botao-ordenar-campo {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: transparent !important;
+  color: inherit !important;
+  text-align: inherit;
+  font: inherit;
+  transform: none !important;
+}
+
+.botao-menu-campo {
+  width: 1.55rem;
+  height: 1.55rem;
+  padding: 0;
+  border: 0;
+  border-radius: 0.35rem;
+  color: inherit;
+  background: rgba(255, 255, 255, 0.08);
+  transform: none !important;
+}
+
+/* menu de ações do campo */
+.menu-campo {
+  position: fixed;
+  z-index: 200;
+  width: 13.5rem;
+  padding: 0.4rem;
+  border: 1px solid var(--borda);
+  border-radius: 0.65rem;
+  background: var(--painel);
+  box-shadow: 0 1rem 2.5rem rgba(0, 0, 0, 0.22);
+}
+
+.menu-campo button {
+  width: 100%;
+  display: block;
+  padding: 0.65rem 0.7rem;
+  border: 0;
+  text-align: left;
+  color: var(--texto);
+  background: transparent;
+}
+
+.menu-campo button:hover {
+  background: var(--painel-hover);
+}
+
+.menu-campo .acao-perigosa {
+  color: var(--vermelho);
+}
+
+/* tipos de campos */
+.grade-limites-campo,
+.grade-regras {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.7rem;
+}
+
+.grade-limites-campo label {
+  margin-bottom: 1rem;
+}
+
+.celula-selecao,
+.celula-checkbox {
+  width: 100%;
+  min-width: 6rem;
+  height: 100%;
+  min-height: 2.7rem;
+  padding: 0.65rem;
+  border: 0;
+  outline: 0;
+  color: var(--texto);
+  background: transparent;
+  font: inherit;
+}
+
+.celula-checkbox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.celula-checkbox input {
+  width: 1rem !important;
+  height: 1rem;
+}
+
+.celula-invalida {
+  box-shadow: inset 0 0 0 2px var(--vermelho) !important;
+}
+
+/* toasts internos */
+.toast-container {
+  position: fixed;
+  right: 1.2rem;
+  bottom: 1.2rem;
+  z-index: 300;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  pointer-events: none;
+}
+
+.toast-nexagrid {
+  min-width: 15rem;
+  max-width: 23rem;
+  padding: 0.8rem 0.9rem;
+  border: 1px solid var(--borda);
+  border-left: 3px solid var(--azul);
+  border-radius: 0.6rem;
+  color: var(--texto);
+  background: var(--painel);
+  box-shadow: 0 0.8rem 2rem rgba(0, 0, 0, 0.2);
+  font-size: 0.68rem;
+  line-height: 1.5;
+  animation: toastEntrada 0.2s ease-out;
+}
+
+.toast-nexagrid.sucesso {
+  border-left-color: var(--verde);
+}
+.toast-nexagrid.erro {
+  border-left-color: var(--vermelho);
+}
+
+@keyframes toastEntrada {
+  from {
+    opacity: 0;
+    transform: translateY(0.5rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* configurações extras */
+.card-configuracao-largo {
+  grid-column: span 1;
+}
+
+.grade-regras label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  color: var(--texto-claro);
+  font-size: 0.58rem;
+  font-weight: 700;
+}
+
+.grade-regras input {
+  width: 100%;
+  padding: 0.68rem;
+  border: 1px solid var(--borda);
+  border-radius: 0.5rem;
+  outline: none;
+  color: var(--texto);
+  background: var(--painel-secundario);
+  font: inherit;
+}
+
+.acoes-configuracao {
+  display: flex;
+  gap: 0.55rem;
+  flex-wrap: wrap;
+}
+
+button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+@media (max-width: 900px) {
+  .barra-dashboard,
+  .barra-tabela {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .barra-dashboard > select,
+  .barra-tabela > select {
+    width: 100%;
+  }
+
+  .grafico-container {
+    height: 15rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .acoes-dashboard,
+  .acoes {
+    width: 100%;
+  }
+
+  .acoes-dashboard button,
+  .acoes button {
+    flex: 1;
+  }
+
+  .grade-limites-campo,
+  .grade-regras {
+    grid-template-columns: 1fr;
+  }
+
+  .toast-container {
+    left: 0.75rem;
+    right: 0.75rem;
+    bottom: 0.75rem;
+  }
+
+  .toast-nexagrid {
+    min-width: 0;
+    max-width: none;
+  }
+}
+
+/* opções nativas recebem as cores do tema quando o navegador permite */
+select option {
+  color: var(--texto);
+  background: var(--painel);
+}
+
+html[data-theme="dark"] select {
+  color-scheme: dark;
+}
+
+html[data-theme="light"] select {
+  color-scheme: light;
+}
+
+/* ================================================= */
+/* BARRA DE ROLAGEM NO TEMA DO NEXAGRID */
+/* ================================================= */
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--azul) var(--painel-secundario);
+}
+
+*::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+*::-webkit-scrollbar-track {
+  background: var(--painel-secundario);
+}
+
+*::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--azul), var(--verde));
+  border-radius: 999px;
+  border: 2px solid var(--painel-secundario);
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  filter: brightness(1.08);
+}
+
+*::-webkit-scrollbar-corner {
+  background: var(--painel-secundario);
+}
+
+/* ================================================= */
+/* PAINEL RÁPIDO PERTO DA PLANILHA */
+/* ================================================= */
+
+.painel-rapido-planilha {
+  margin-bottom: 0.9rem;
+  padding: 1rem;
+  border: 1px solid var(--borda);
+  border-radius: 0.8rem;
+  background: linear-gradient(
+    180deg,
+    var(--painel),
+    color-mix(in srgb, var(--painel) 85%, var(--azul) 15%)
+  );
+  position: sticky;
+  top: 0.65rem;
+  z-index: 18;
+  box-shadow: 0 0.8rem 2rem rgba(0, 0, 0, 0.12);
+}
+
+.painel-rapido-topo {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.8rem;
+  margin-bottom: 0.9rem;
+}
+
+.painel-rapido-topo h3 {
+  margin: 0.12rem 0;
+  font-size: 1rem;
+}
+
+.subtitulo-rapido {
+  margin: 0;
+  color: var(--texto-claro);
+  font-size: 0.76rem;
+}
+
+.painel-rapido-conteudo {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 0.9rem;
+  align-items: end;
+}
+
+.painel-rapido-acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+}
+
+.painel-rapido-cores {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.65rem;
+}
+
+.painel-rapido-cores label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  color: var(--texto-claro);
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+
+.painel-rapido-cores input[type="color"] {
+  width: 100%;
+  height: 2.6rem;
+  padding: 0.25rem;
+  border: 1px solid var(--borda);
+  border-radius: 0.6rem;
+  background: var(--painel-secundario);
+}
+
+/* ================================================= */
+/* SELECTS NATIVOS TRANSFORMADOS NO TEMA DO SITE */
+/* ================================================= */
+
+.nexa-select-original {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  overflow: hidden !important;
+}
+
+.select-personalizado.select-nativo-nexa {
+  width: 100%;
+}
+
+.select-personalizado.select-nativo-nexa .select-personalizado-botao {
+  min-height: 2.45rem;
+  padding: 0.65rem 0.8rem;
+}
+
+.barra-dashboard .select-personalizado.select-nativo-nexa {
+  min-width: 12rem;
+  max-width: 14rem;
+}
+
+.opcoes-personalizacao
+  .select-personalizado.select-nativo-nexa
+  .select-personalizado-botao {
+  min-height: 2.15rem;
+  font-size: 0.72rem;
+}
+
+.titulo-personalizacao {
+  align-items: flex-start;
+}
+
+@media (max-width: 1100px) {
+  .painel-rapido-conteudo {
+    grid-template-columns: 1fr;
+  }
+
+  .painel-rapido-cores {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  .painel-rapido-topo {
+    flex-direction: column;
+  }
+
+  .painel-rapido-cores {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .painel-rapido-planilha {
+    top: 0.35rem;
+    padding: 0.85rem;
+  }
+}
+
+/* ================================================= */
+/* V8 - COLUNAS AJUSTADAS AO CONTEÚDO */
+/* ================================================= */
+
+/*
+    evita que títulos como "Total de aulas" e "Frequência %"
+    quebrem em duas linhas dentro do NexaGrid.
+*/
+.tabela-container th {
+  white-space: nowrap;
+  width: max-content;
+  min-width: 9rem;
+}
+
+/*
+    deixa campos mais confortáveis para leitura.
+    a tabela continua podendo rolar horizontalmente quando necessário.
+*/
+.tabela-container td input,
+.tabela-container td select,
+.tabela-container td .select-personalizado {
+  min-width: 8rem;
+}
+
+/* campos com nomes maiores ganham espaço sem esmagar o texto */
+.tabela-container th:not(.coluna-acoes) {
+  padding-left: 0.9rem;
+  padding-right: 0.9rem;
+}
+
+/* a coluna de ações continua compacta */
+.tabela-container th.coluna-acoes,
+.tabela-container td.coluna-acoes {
+  min-width: 5rem;
+  width: 5rem;
+}
+
+/* ================================================= */
+/* V9 - SUPORTE VISUAL PARA PLANILHAS IMPORTADAS */
+/* ================================================= */
+
+/*
+    Quando a planilha importada possui larguras próprias, a tabela pode ficar
+    maior do que a tela. Mantemos a rolagem horizontal em vez de comprimir
+    as colunas e destruir o formato original.
+*/
+.tabela-container {
+  overflow-x: auto;
+  overflow-y: visible;
+}
+
+/*
+    O controle interno acompanha o estilo da célula sem adicionar uma borda
+    própria que não existia no Excel.
+*/
+#corpoTabela td > input,
+#corpoTabela td > select {
+  min-width: 100%;
+  box-sizing: border-box;
+}
+
+/*
+    Cabeçalhos importados costumam ser formatados para uma única linha.
+    Se a coluna original for larga o suficiente, o NexaGrid preserva isso.
+*/
+#cabecalhoTabela th,
+#cabecalhoTabela .botao-ordenar-campo {
+  white-space: nowrap;
+}
+
+/* ================================================= */
+/* V10 - IMPORTAÇÃO E LIXEIRA */
+/* ================================================= */
+
+/*
+    A página da lixeira usa a mesma caixa principal das outras páginas.
+    Isso mantém tema claro/escuro, bordas e espaçamentos consistentes.
+*/
+.pagina-lixeira {
+  width: 100%;
+  max-width: 87rem;
+  min-height: calc(100vh - 3.8rem);
+  margin: auto;
+  padding: 1.9rem;
+  border: 1px solid var(--borda);
+  border-radius: 1rem;
+  background: var(--painel);
+  box-shadow: 0 1rem 2.6rem var(--sombra);
+}
+
+.cabecalho-lixeira {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.3rem;
+}
+
+.cabecalho-lixeira h2 {
+  margin-top: 0.3rem;
+  color: var(--texto-forte);
+  font-size: 1.8rem;
+}
+
+/* botão perigoso recebe cor vermelha sem perder o tema */
+.acao-perigosa {
+  color: var(--vermelho) !important;
+  border-color: color-mix(
+    in srgb,
+    var(--vermelho) 45%,
+    var(--borda)
+  ) !important;
+  background: color-mix(in srgb, var(--vermelho) 7%, var(--painel)) !important;
+}
+
+.acao-perigosa:hover {
+  color: #ffffff !important;
+  border-color: var(--vermelho) !important;
+  background: var(--vermelho) !important;
+}
+
+.resumo-lixeira {
+  margin-bottom: 1rem;
+}
+
+.resumo-lixeira > div {
+  width: fit-content;
+  min-width: 13rem;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  border: 1px solid var(--borda);
+  border-left: 3px solid var(--verde);
+  border-radius: 0.7rem;
+  background: var(--painel-secundario);
+}
+
+.resumo-lixeira > div > span {
+  font-size: 1.35rem;
+}
+
+.resumo-lixeira small {
+  display: block;
+  color: var(--texto-claro);
+  font-size: 0.62rem;
+}
+
+.resumo-lixeira strong {
+  display: block;
+  margin-top: 0.15rem;
+  color: var(--texto-forte);
+  font-size: 1.4rem;
+}
+
+/* os cards da lixeira têm uma faixa diferente para indicar estado excluído */
+.lista-lixeira .card-planilha {
+  cursor: default;
+  border-left: 3px solid var(--vermelho);
+}
+
+.acoes-lixeira-card {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-top: 0.9rem;
+}
+
+.data-exclusao {
+  color: var(--texto-claro);
+  font-size: 0.56rem;
+}
+
+/* ================================================= */
+/* MODAL DE ESCOLHA DA ABA IMPORTADA */
+/* ================================================= */
+
+.modal-abas-importacao {
+  width: 31rem;
+  max-width: 92%;
+  margin: auto;
+  border: 1px solid var(--borda);
+  border-radius: 0.9rem;
+  color: var(--texto);
+  background: var(--painel);
+  box-shadow: 0 1.5rem 4rem rgba(0, 0, 0, 0.3);
+}
+
+.conteudo-modal-abas {
+  padding: 1.4rem;
+}
+
+.lista-abas-importacao {
+  display: grid;
+  gap: 0.55rem;
+  margin-top: 1rem;
+}
+
+.botao-aba-importacao {
+  width: 100%;
+  padding: 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.7rem;
+  text-align: left;
+  background: var(--painel-secundario);
+}
+
+.botao-aba-importacao strong {
+  color: var(--texto-forte);
+  font-size: 0.75rem;
+}
+
+.botao-aba-importacao small {
+  color: var(--texto-claro);
+  font-size: 0.55rem;
+}
+
+/* ================================================= */
+/* PLANILHAS IMPORTADAS COM ESTILO ORIGINAL */
+/* ================================================= */
+
+/*
+    Quando uma planilha importada tem larguras definidas, a tabela precisa
+    manter essas medidas. Em vez de tentar comprimir tudo na tela, usamos
+    rolagem horizontal, igual a um editor de planilhas real.
+*/
+.tabela-container.tem-aparencia-importada table {
+  width: max-content;
+  min-width: 100%;
+  table-layout: fixed;
+}
+
+.tabela-container.tem-aparencia-importada th,
+.tabela-container.tem-aparencia-importada td {
+  overflow: hidden;
+}
+
+/*
+    Não quebramos cabeçalhos importados à força. Se o arquivo original tiver
+    uma coluna suficientemente larga, o título continua em uma linha.
+*/
+.tabela-container.tem-aparencia-importada th {
+  white-space: nowrap;
+}
+
+/*
+    A célula pode mostrar o conteúdo completo enquanto o usuário edita.
+    O recorte fica apenas no estado normal para não alterar o tamanho da grade.
+*/
+.tabela-container.tem-aparencia-importada td input,
+.tabela-container.tem-aparencia-importada td select {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tabela-container.tem-aparencia-importada td input:focus,
+.tabela-container.tem-aparencia-importada td select:focus {
+  overflow: visible;
+  text-overflow: clip;
+}
+
+@media (max-width: 800px) {
+  .cabecalho-lixeira {
+    flex-direction: column;
+  }
+
+  .pagina-lixeira {
+    padding: 1.2rem;
   }
 }

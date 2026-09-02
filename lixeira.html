@@ -1,0 +1,172 @@
+<!--
+=============================================================
+NEXAGRID - LIXEIRA
+=============================================================
+
+Esta página mostra planilhas que foram excluídas pelo usuário.
+
+A exclusão normal não apaga mais a planilha imediatamente. Em vez disso,
+ela é movida para uma área separada no localStorage chamada lixeira.
+
+Nesta página o usuário pode:
+- restaurar uma planilha;
+- excluir uma planilha definitivamente;
+- esvaziar toda a lixeira.
+=============================================================
+-->
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lixeira - NexaGrid</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+    <!-- decoração usada nas outras páginas -->
+    <div class="bolha bolha-1"></div>
+    <div class="bolha bolha-2"></div>
+    <div class="bolha bolha-3"></div>
+
+    <!-- ================================================= -->
+    <!-- MENU LATERAL -->
+    <!-- ================================================= -->
+    <aside>
+      <div class="marca">
+        <div class="logo-nexagrid"><span>◉</span></div>
+        <div>
+          <h1>NexaGrid</h1>
+          <p>dados claros. decisões melhores.</p>
+        </div>
+      </div>
+
+      <nav>
+        <button onclick="window.location.href = 'index.html'">
+          <span class="icone-menu">⌂</span>
+          <span class="texto-menu" data-i18n="nav.dashboard">Dashboard</span>
+        </button>
+
+        <button onclick="window.location.href = 'index.html?nova=1'">
+          <span class="icone-menu">＋</span>
+          <span class="texto-menu" data-i18n="nav.new">Nova planilha</span>
+        </button>
+
+        <button onclick="window.location.href = 'configuracoes.html'">
+          <span class="icone-menu">⚙</span>
+          <span class="texto-menu" data-i18n="nav.settings">Configurações</span>
+        </button>
+
+        <!-- item ativo desta página -->
+        <button class="menu-ativo">
+          <span class="icone-menu">🗑</span>
+          <span class="texto-menu" data-i18n="nav.trash">Lixeira</span>
+        </button>
+
+        <button onclick="window.location.href = 'sobre.html'">
+          <span class="icone-menu">✦</span>
+          <span class="texto-menu" data-i18n="nav.about">Sobre</span>
+        </button>
+      </nav>
+
+      <div class="natureza-menu">
+        <div class="sol-menu"></div>
+        <div class="folha-menu">❧</div>
+      </div>
+
+      <footer class="rodape-menu">
+        <div class="status-online">
+          <span></span>
+          <span data-i18n="status.ready">Sistema pronto</span>
+        </div>
+        <small>NexaGrid Workspace</small>
+      </footer>
+    </aside>
+
+    <!-- ================================================= -->
+    <!-- CONTEÚDO DA LIXEIRA -->
+    <!-- ================================================= -->
+    <main>
+      <section class="pagina-lixeira">
+        <header class="cabecalho-lixeira">
+          <div>
+            <p class="saudacao" data-i18n="trash.eyebrow">Recuperação</p>
+            <h2 data-i18n="trash.title">Lixeira</h2>
+            <p class="subtitulo" data-i18n="trash.subtitle">
+              Planilhas excluídas ficam aqui até você restaurar ou apagar
+              definitivamente.
+            </p>
+          </div>
+
+          <!-- apaga todo o conteúdo da lixeira após confirmação -->
+          <button
+            id="botaoEsvaziarLixeira"
+            class="acao-perigosa"
+            type="button"
+            onclick="esvaziarLixeira()"
+            data-i18n="trash.empty"
+          >
+            Esvaziar lixeira
+          </button>
+        </header>
+
+        <!-- mostra quantas planilhas estão aguardando recuperação -->
+        <section class="resumo-lixeira">
+          <div>
+            <span>🗑</span>
+            <div>
+              <small data-i18n="trash.items">Itens na lixeira</small>
+              <strong id="totalLixeira">0</strong>
+            </div>
+          </div>
+        </section>
+
+        <!-- os cards são criados pelo JavaScript -->
+        <div id="listaLixeira" class="lista-planilhas lista-lixeira"></div>
+      </section>
+    </main>
+
+    <!-- mensagens temporárias -->
+    <div id="toastContainer" class="toast-container" aria-live="polite"></div>
+
+    <!-- ================================================= -->
+    <!-- MODAL DE CONFIRMAÇÃO DO PRÓPRIO NEXAGRID -->
+    <!-- ================================================= -->
+    <dialog id="modalNotificacao" class="modal-notificacao">
+      <div class="conteudo-notificacao">
+        <div class="topo-notificacao">
+          <div id="iconeNotificacao" class="icone-notificacao">!</div>
+          <div>
+            <h2 id="notificacaoTitulo">NexaGrid</h2>
+            <p id="notificacaoMensagem"></p>
+          </div>
+        </div>
+
+        <div id="areaInputNotificacao" class="area-input-notificacao escondido">
+          <input id="inputNotificacao" autocomplete="off" />
+        </div>
+
+        <footer>
+          <button
+            type="button"
+            id="botaoCancelarNotificacao"
+            onclick="cancelarNotificacao()"
+          >
+            Cancelar
+          </button>
+
+          <button
+            type="button"
+            id="botaoConfirmarNotificacao"
+            class="principal"
+            onclick="confirmarNotificacao()"
+          >
+            OK
+          </button>
+        </footer>
+      </div>
+    </dialog>
+
+    <script src="script.js"></script>
+  </body>
+</html>

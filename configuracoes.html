@@ -1,0 +1,405 @@
+<!--
+=============================================================
+NEXAGRID - PÁGINA DE CONFIGURAÇÕES
+=============================================================
+
+Esta página foi separada do index para deixar o projeto mais organizado.
+
+Ela permite alterar preferências gerais do SITE, e não apenas de uma
+planilha específica:
+- tema claro/escuro;
+- tamanho geral dos textos;
+- idioma;
+- regras usadas por alguns modelos.
+
+As escolhas são salvas no localStorage pelo script.js.
+=============================================================
+-->
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Configurações - NexaGrid</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+    <!-- decoração discreta do fundo -->
+    <div class="bolha bolha-1"></div>
+    <div class="bolha bolha-2"></div>
+    <div class="bolha bolha-3"></div>
+
+    <!-- ================================================= -->
+    <!-- MENU LATERAL -->
+    <!-- ================================================= -->
+    <aside>
+      <div class="marca">
+        <div class="logo-nexagrid"><span>◉</span></div>
+        <div>
+          <h1>NexaGrid</h1>
+          <p>dados claros. decisões melhores.</p>
+        </div>
+      </div>
+
+      <nav>
+        <button onclick="window.location.href = 'index.html'">
+          <span class="icone-menu">⌂</span>
+          <span class="texto-menu" data-i18n="nav.dashboard">Dashboard</span>
+        </button>
+
+        <button onclick="window.location.href = 'index.html?nova=1'">
+          <span class="icone-menu">＋</span>
+          <span class="texto-menu" data-i18n="nav.new">Nova planilha</span>
+        </button>
+
+        <button class="menu-ativo">
+          <span class="icone-menu">⚙</span>
+          <span class="texto-menu" data-i18n="nav.settings">Configurações</span>
+        </button>
+
+        <!-- acesso à lixeira de planilhas -->
+        <button onclick="window.location.href = 'lixeira.html'">
+          <span class="icone-menu">🗑</span>
+          <span class="texto-menu" data-i18n="nav.trash">Lixeira</span>
+        </button>
+
+        <button onclick="window.location.href = 'sobre.html'">
+          <span class="icone-menu">✦</span>
+          <span class="texto-menu" data-i18n="nav.about">Sobre</span>
+        </button>
+      </nav>
+
+      <div class="natureza-menu">
+        <div class="sol-menu"></div>
+        <div class="folha-menu">❧</div>
+      </div>
+
+      <footer class="rodape-menu">
+        <div class="status-online">
+          <span></span>
+          <span data-i18n="status.ready">Sistema pronto</span>
+        </div>
+        <small>NexaGrid Workspace</small>
+      </footer>
+    </aside>
+
+    <!-- ================================================= -->
+    <!-- PÁGINA DE CONFIGURAÇÕES -->
+    <!-- ================================================= -->
+    <main>
+      <section id="configuracoes" class="pagina-configuracoes">
+        <header class="cabecalho-configuracoes">
+          <div>
+            <p class="saudacao" data-i18n="settings.eyebrow">
+              Preferências do sistema
+            </p>
+            <h2 data-i18n="settings.title">Configurações</h2>
+            <p class="subtitulo" data-i18n="settings.subtitle">
+              Ajuste a aparência e o idioma do NexaGrid.
+            </p>
+          </div>
+        </header>
+
+        <div class="grade-configuracoes">
+          <!-- ================================================= -->
+          <!-- TEMA -->
+          <!-- ================================================= -->
+          <article class="card-configuracao">
+            <div class="icone-configuracao">◐</div>
+
+            <div class="conteudo-configuracao">
+              <h3 data-i18n="settings.theme">Tema do site</h3>
+              <p data-i18n="settings.themeText">
+                Alterne entre o tema claro e o tema escuro.
+              </p>
+
+              <!--
+                menu próprio do NexaGrid.
+                não usa o menu padrão do navegador.
+              -->
+              <div class="select-personalizado" data-input="configTema">
+                <input id="configTema" type="hidden" value="light" />
+
+                <button
+                  type="button"
+                  class="select-personalizado-botao"
+                  onclick="alternarMenuConfiguracao(this)"
+                  aria-expanded="false"
+                >
+                  <span class="select-personalizado-valor">Claro</span>
+                  <span class="select-personalizado-seta">⌄</span>
+                </button>
+
+                <div class="select-personalizado-menu">
+                  <button
+                    type="button"
+                    data-value="light"
+                    data-i18n="settings.light"
+                    onclick="selecionarOpcaoConfiguracao(this, 'configTema')"
+                  >
+                    Claro
+                  </button>
+
+                  <button
+                    type="button"
+                    data-value="dark"
+                    data-i18n="settings.dark"
+                    onclick="selecionarOpcaoConfiguracao(this, 'configTema')"
+                  >
+                    Escuro
+                  </button>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- ================================================= -->
+          <!-- TAMANHO DA FONTE -->
+          <!-- ================================================= -->
+          <article class="card-configuracao">
+            <div class="icone-configuracao">Aa</div>
+
+            <div class="conteudo-configuracao">
+              <h3 data-i18n="settings.font">Tamanho do texto</h3>
+              <p data-i18n="settings.fontText">
+                Aumente ou diminua os textos de todo o sistema.
+              </p>
+
+              <div class="select-personalizado" data-input="configFonte">
+                <input id="configFonte" type="hidden" value="normal" />
+
+                <button
+                  type="button"
+                  class="select-personalizado-botao"
+                  onclick="alternarMenuConfiguracao(this)"
+                  aria-expanded="false"
+                >
+                  <span class="select-personalizado-valor">Normal</span>
+                  <span class="select-personalizado-seta">⌄</span>
+                </button>
+
+                <div class="select-personalizado-menu">
+                  <button
+                    type="button"
+                    data-value="small"
+                    data-i18n="font.small"
+                    onclick="selecionarOpcaoConfiguracao(this, 'configFonte')"
+                  >
+                    Pequena
+                  </button>
+
+                  <button
+                    type="button"
+                    data-value="normal"
+                    data-i18n="font.normal"
+                    onclick="selecionarOpcaoConfiguracao(this, 'configFonte')"
+                  >
+                    Normal
+                  </button>
+
+                  <button
+                    type="button"
+                    data-value="large"
+                    data-i18n="font.large"
+                    onclick="selecionarOpcaoConfiguracao(this, 'configFonte')"
+                  >
+                    Grande
+                  </button>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- ================================================= -->
+          <!-- IDIOMA -->
+          <!-- ================================================= -->
+          <article class="card-configuracao">
+            <div class="icone-configuracao">文</div>
+
+            <div class="conteudo-configuracao">
+              <h3 data-i18n="settings.language">Idioma</h3>
+              <p data-i18n="settings.languageText">
+                Escolha o idioma usado pela interface.
+              </p>
+
+              <div class="select-personalizado" data-input="configIdioma">
+                <input id="configIdioma" type="hidden" value="pt-BR" />
+
+                <button
+                  type="button"
+                  class="select-personalizado-botao"
+                  onclick="alternarMenuConfiguracao(this)"
+                  aria-expanded="false"
+                >
+                  <span class="select-personalizado-valor">Português</span>
+                  <span class="select-personalizado-seta">⌄</span>
+                </button>
+
+                <div class="select-personalizado-menu">
+                  <button
+                    type="button"
+                    data-value="pt-BR"
+                    onclick="selecionarOpcaoConfiguracao(this, 'configIdioma')"
+                  >
+                    Português
+                  </button>
+
+                  <button
+                    type="button"
+                    data-value="en"
+                    onclick="selecionarOpcaoConfiguracao(this, 'configIdioma')"
+                  >
+                    English
+                  </button>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- ================================================= -->
+          <!-- REGRAS DOS MODELOS -->
+          <!-- ================================================= -->
+          <article class="card-configuracao card-configuracao-largo">
+            <div class="icone-configuracao">∑</div>
+            <div class="conteudo-configuracao">
+              <h3 data-i18n="settings.rules">Regras dos cálculos</h3>
+              <p data-i18n="settings.rulesText">
+                Defina os limites usados pelos modelos escolares.
+              </p>
+
+              <div class="grade-regras">
+                <label>
+                  <span data-i18n="settings.passGrade"
+                    >Média para aprovação</span
+                  >
+                  <input
+                    id="configMediaAprovacao"
+                    type="number"
+                    min="0"
+                    max="10"
+                    step="0.1"
+                    value="6"
+                    onchange="alterarConfiguracoes()"
+                  />
+                </label>
+
+                <label>
+                  <span data-i18n="settings.minAttendance"
+                    >Frequência mínima (%)</span
+                  >
+                  <input
+                    id="configFrequenciaMinima"
+                    type="number"
+                    min="0"
+                    max="100"
+                    step="1"
+                    value="75"
+                    onchange="alterarConfiguracoes()"
+                  />
+                </label>
+              </div>
+            </div>
+          </article>
+
+          <!-- ================================================= -->
+          <!-- BACKUP -->
+          <!-- ================================================= -->
+          <article class="card-configuracao card-configuracao-largo">
+            <div class="icone-configuracao">⇅</div>
+            <div class="conteudo-configuracao">
+              <h3 data-i18n="settings.backup">Backup dos dados</h3>
+              <p data-i18n="settings.backupText">
+                Salve todas as planilhas e configurações em um arquivo JSON ou
+                restaure um backup.
+              </p>
+
+              <div class="acoes-configuracao">
+                <button
+                  type="button"
+                  onclick="exportarBackup()"
+                  data-i18n="settings.backupExport"
+                >
+                  ↓ Criar backup
+                </button>
+                <button
+                  type="button"
+                  onclick="selecionarBackup()"
+                  data-i18n="settings.backupImport"
+                >
+                  ↑ Restaurar backup
+                </button>
+                <input
+                  id="arquivoBackup"
+                  class="arquivo-escondido"
+                  type="file"
+                  accept=".json,application/json"
+                  onchange="importarBackup(event)"
+                />
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <!-- restaura as configurações gerais -->
+        <section class="area-restaurar-config">
+          <div>
+            <h3 data-i18n="settings.restoreTitle">Restaurar configurações</h3>
+            <p data-i18n="settings.restoreText">
+              Volta para tema claro, fonte normal e português.
+            </p>
+          </div>
+
+          <button
+            onclick="restaurarConfiguracoes()"
+            data-i18n="settings.restore"
+          >
+            Restaurar padrão
+          </button>
+        </section>
+      </section>
+    </main>
+
+    <!-- ================================================= -->
+    <!-- MODAL DE NOTIFICAÇÃO DO NEXAGRID -->
+    <!-- ================================================= -->
+    <!-- necessário para confirmar a restauração sem usar alert/confirm do navegador -->
+    <dialog id="modalNotificacao" class="modal-notificacao">
+      <div class="conteudo-notificacao">
+        <div class="topo-notificacao">
+          <div id="iconeNotificacao" class="icone-notificacao">!</div>
+
+          <div>
+            <h2 id="notificacaoTitulo">NexaGrid</h2>
+            <p id="notificacaoMensagem"></p>
+          </div>
+        </div>
+
+        <div id="areaInputNotificacao" class="area-input-notificacao escondido">
+          <input id="inputNotificacao" autocomplete="off" />
+        </div>
+
+        <footer>
+          <button
+            type="button"
+            id="botaoCancelarNotificacao"
+            onclick="cancelarNotificacao()"
+          >
+            Cancelar
+          </button>
+
+          <button
+            type="button"
+            id="botaoConfirmarNotificacao"
+            class="principal"
+            onclick="confirmarNotificacao()"
+          >
+            OK
+          </button>
+        </footer>
+      </div>
+    </dialog>
+
+    <script src="script.js"></script>
+  </body>
+</html>

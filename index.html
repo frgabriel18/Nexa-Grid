@@ -1,16 +1,53 @@
+<!--
+=============================================================
+NEXAGRID - PÁGINA PRINCIPAL
+=============================================================
+
+Este arquivo contém a estrutura principal do sistema.
+
+Aqui ficam:
+- menu lateral;
+- dashboard com as planilhas salvas;
+- editor da planilha;
+- personalização visual;
+- painel rápido perto da tabela;
+- pesquisa e filtros;
+- modais usados para criar planilhas e campos.
+
+IMPORTANTE:
+O HTML cria a estrutura, mas praticamente toda a lógica fica em
+script.js. Por isso vários elementos possuem IDs, por exemplo:
+
+    id="corCabecalho"
+    id="tabelaPlanilha"
+    id="modalCampo"
+
+O JavaScript procura esses IDs para alterar o conteúdo da página.
+=============================================================
+-->
 <!doctype html>
 <html lang="pt-BR">
   <head>
     <!-- configurações básicas -->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AeroGrid</title>
+    <title>NexaGrid</title>
 
     <!-- visual do sistema -->
     <link rel="stylesheet" href="style.css" />
 
-    <!-- biblioteca usada para exportar .xlsx com estilos e fórmulas -->
+    <!-- biblioteca usada para importar/exportar .xlsx com estilos e fórmulas -->
     <script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.min.js"></script>
+
+    <!--
+      ExcelJS é usado na importação de arquivos .xlsx porque consegue ler
+      estilos, largura das colunas, altura das linhas e outras informações
+      visuais com mais fidelidade que a biblioteca usada para exportação.
+    -->
+    <script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
+
+    <!-- gráficos automáticos dos modelos prontos -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
   </head>
   <body>
     <!-- decoração discreta do fundo -->
@@ -23,10 +60,10 @@
     <!-- ================================================= -->
     <aside>
       <div class="marca">
-        <div class="logo-aerogrid"><span>◉</span></div>
+        <div class="logo-nexagrid"><span>◉</span></div>
         <div>
-          <h1>AeroGrid</h1>
-          <p>organize. visualize. respire.</p>
+          <h1>NexaGrid</h1>
+          <p>dados claros. decisões melhores.</p>
         </div>
       </div>
 
@@ -41,10 +78,16 @@
           <span class="texto-menu" data-i18n="nav.new">Nova planilha</span>
         </button>
 
-        <!-- nova aba de configurações -->
-        <button onclick="mostrarConfiguracoes()">
+        <!-- configurações agora ficam em uma página separada -->
+        <button onclick="window.location.href = 'configuracoes.html'">
           <span class="icone-menu">⚙</span>
           <span class="texto-menu" data-i18n="nav.settings">Configurações</span>
+        </button>
+
+        <!-- lixeira: planilhas excluídas podem ser restauradas -->
+        <button onclick="window.location.href = 'lixeira.html'">
+          <span class="icone-menu">🗑</span>
+          <span class="texto-menu" data-i18n="nav.trash">Lixeira</span>
         </button>
 
         <button onclick="window.location.href = 'sobre.html'">
@@ -63,7 +106,7 @@
           <span></span>
           <span data-i18n="status.ready">Sistema pronto</span>
         </div>
-        <small>AeroGrid Workspace</small>
+        <small>NexaGrid Workspace</small>
       </footer>
     </aside>
 
@@ -86,18 +129,37 @@
             </p>
           </div>
 
-          <button
-            class="principal"
-            onclick="abrirCriacao()"
-            data-i18n="dashboard.create"
-          >
-            ＋ Criar planilha
-          </button>
+          <div class="acoes-dashboard">
+            <!-- importa planilhas já existentes -->
+            <button
+              type="button"
+              onclick="selecionarArquivoImportacao()"
+              data-i18n="dashboard.import"
+            >
+              ↑ Importar
+            </button>
+
+            <button
+              class="principal"
+              onclick="abrirCriacao()"
+              data-i18n="dashboard.create"
+            >
+              ＋ Criar planilha
+            </button>
+
+            <input
+              id="arquivoImportacao"
+              class="arquivo-escondido"
+              type="file"
+              accept=".xlsx,.xls,.csv"
+              onchange="importarPlanilhaArquivo(event)"
+            />
+          </div>
         </header>
 
         <section class="banner">
           <div class="banner-texto">
-            <span class="mini-etiqueta">AeroGrid</span>
+            <span class="mini-etiqueta">NexaGrid</span>
             <h3 data-i18n="banner.title">
               Planilhas inteligentes, sem complicação.
             </h3>
@@ -151,6 +213,36 @@
             </div>
           </div>
 
+          <!-- pesquisa e ordenação das planilhas do dashboard -->
+          <div class="barra-dashboard">
+            <label class="campo-busca">
+              <span>⌕</span>
+              <input
+                id="pesquisaPlanilha"
+                type="search"
+                placeholder="Pesquisar planilhas..."
+                data-i18n-placeholder="dashboard.searchPlaceholder"
+                oninput="carregarDashboard()"
+              />
+            </label>
+
+            <select
+              class="nexa-select"
+              id="ordenacaoPlanilhas"
+              onchange="carregarDashboard()"
+              aria-label="Ordenar planilhas"
+            >
+              <option value="recentes" data-i18n="dashboard.sortRecent">
+                Mais recentes
+              </option>
+              <option value="antigas" data-i18n="dashboard.sortOld">
+                Mais antigas
+              </option>
+              <option value="az" data-i18n="dashboard.sortAZ">Nome A–Z</option>
+              <option value="za" data-i18n="dashboard.sortZA">Nome Z–A</option>
+            </select>
+          </div>
+
           <!-- o JavaScript cria os cards aqui -->
           <div id="listaPlanilhas" class="lista-planilhas"></div>
         </section>
@@ -182,6 +274,24 @@
           </div>
 
           <div class="acoes">
+            <!-- histórico do editor -->
+            <button
+              id="botaoDesfazer"
+              type="button"
+              onclick="desfazer()"
+              data-i18n="editor.undo"
+            >
+              ↶ Desfazer
+            </button>
+            <button
+              id="botaoRefazer"
+              type="button"
+              onclick="refazer()"
+              data-i18n="editor.redo"
+            >
+              ↷ Refazer
+            </button>
+
             <!-- agora este botão abre um configurador completo -->
             <button onclick="adicionarColuna()" data-i18n="editor.field">
               ＋ Campo
@@ -275,7 +385,11 @@
 
             <label>
               <span data-i18n="personalization.view">Visualização</span>
-              <select id="estiloPlanilha" onchange="alterarPersonalizacao()">
+              <select
+                class="nexa-select"
+                id="estiloPlanilha"
+                onchange="alterarPersonalizacao()"
+              >
                 <option value="grade" data-i18n="personalization.grid">
                   Grade
                 </option>
@@ -287,7 +401,11 @@
 
             <label>
               <span data-i18n="personalization.fontSize">Tamanho da fonte</span>
-              <select id="tamanhoFonte" onchange="alterarPersonalizacao()">
+              <select
+                class="nexa-select"
+                id="tamanhoFonte"
+                onchange="alterarPersonalizacao()"
+              >
                 <option value="12" data-i18n="font.small">Pequena</option>
                 <option value="14" selected data-i18n="font.normal">
                   Normal
@@ -299,7 +417,11 @@
 
             <label>
               <span data-i18n="personalization.align">Alinhamento</span>
-              <select id="alinhamento" onchange="alterarPersonalizacao()">
+              <select
+                class="nexa-select"
+                id="alinhamento"
+                onchange="alterarPersonalizacao()"
+              >
                 <option value="left" data-i18n="align.left">Esquerda</option>
                 <option value="center" data-i18n="align.center">
                   Centralizado
@@ -313,96 +435,150 @@
         <!-- resultados automáticos de cada modelo -->
         <section id="resumoModelo" class="resumo-modelo escondido"></section>
 
+        <!-- gráfico automático do modelo atual -->
+        <section id="areaGrafico" class="area-grafico escondido">
+          <header>
+            <div>
+              <p class="saudacao" data-i18n="chart.eyebrow">Visualização</p>
+              <h3 id="tituloGrafico" data-i18n="chart.title">
+                Gráfico automático
+              </h3>
+            </div>
+          </header>
+          <div class="grafico-container">
+            <canvas id="graficoModelo"></canvas>
+          </div>
+        </section>
+
+        <!-- painel rápido perto da planilha -->
+        <section class="painel-rapido-planilha">
+          <div class="painel-rapido-topo">
+            <div>
+              <p class="saudacao">Acesso rápido</p>
+              <h3>Ferramentas ao lado da planilha</h3>
+              <p class="subtitulo-rapido">
+                Adicione campos, registros e mude as cores sem voltar para o
+                topo.
+              </p>
+            </div>
+
+            <button type="button" onclick="rolarParaPersonalizacao()">
+              🎨 Mais opções
+            </button>
+          </div>
+
+          <div class="painel-rapido-conteudo">
+            <div class="painel-rapido-acoes">
+              <button
+                type="button"
+                onclick="adicionarColuna()"
+                data-i18n="editor.field"
+              >
+                ＋ Campo
+              </button>
+              <button
+                type="button"
+                onclick="adicionarLinha()"
+                data-i18n="editor.record"
+              >
+                ＋ Registro
+              </button>
+              <button
+                type="button"
+                onclick="desfazer()"
+                data-i18n="editor.undo"
+              >
+                ↶ Desfazer
+              </button>
+              <button type="button" onclick="refazer()" data-i18n="editor.redo">
+                ↷ Refazer
+              </button>
+              <button
+                type="button"
+                class="principal"
+                onclick="exportarPlanilha()"
+                data-i18n="editor.export"
+              >
+                ↓ Exportar
+              </button>
+            </div>
+
+            <div class="painel-rapido-cores">
+              <label>
+                <span>Cabeçalho</span>
+                <input
+                  type="color"
+                  id="corRapidaCabecalho"
+                  value="#244760"
+                  onchange="alterarPersonalizacaoRapida()"
+                />
+              </label>
+
+              <label>
+                <span>Texto</span>
+                <input
+                  type="color"
+                  id="corRapidaTexto"
+                  value="#253746"
+                  onchange="alterarPersonalizacaoRapida()"
+                />
+              </label>
+
+              <label>
+                <span>Células</span>
+                <input
+                  type="color"
+                  id="corRapidaCelulas"
+                  value="#ffffff"
+                  onchange="alterarPersonalizacaoRapida()"
+                />
+              </label>
+
+              <label>
+                <span>Bordas</span>
+                <input
+                  type="color"
+                  id="corRapidaBorda"
+                  value="#d5e0e6"
+                  onchange="alterarPersonalizacaoRapida()"
+                />
+              </label>
+            </div>
+          </div>
+        </section>
+
+        <!-- ferramentas da tabela -->
+        <div class="barra-tabela">
+          <label class="campo-busca">
+            <span>⌕</span>
+            <input
+              id="pesquisaRegistros"
+              type="search"
+              placeholder="Pesquisar nos registros..."
+              data-i18n-placeholder="table.searchPlaceholder"
+              oninput="atualizarPesquisaRegistros(this.value)"
+            />
+          </label>
+
+          <button
+            type="button"
+            onclick="limparFiltrosTabela()"
+            data-i18n="table.clearFilters"
+          >
+            Limpar filtros
+          </button>
+        </div>
+
         <!-- tabela criada pelo JavaScript -->
         <div class="tabela-container">
           <table id="tabelaPlanilha">
             <thead>
               <tr id="cabecalhoTabela"></tr>
+              <tr id="filtrosTabela" class="linha-filtros"></tr>
             </thead>
             <tbody id="corpoTabela"></tbody>
           </table>
         </div>
-      </section>
-
-      <!-- ================================================= -->
-      <!-- CONFIGURAÇÕES GERAIS -->
-      <!-- ================================================= -->
-      <section id="configuracoes" class="escondido">
-        <header class="cabecalho-configuracoes">
-          <div>
-            <p class="saudacao" data-i18n="settings.eyebrow">
-              Preferências do sistema
-            </p>
-            <h2 data-i18n="settings.title">Configurações</h2>
-            <p class="subtitulo" data-i18n="settings.subtitle">
-              Ajuste a aparência e o idioma do AeroGrid.
-            </p>
-          </div>
-        </header>
-
-        <div class="grade-configuracoes">
-          <!-- tema claro/escuro -->
-          <article class="card-configuracao">
-            <div class="icone-configuracao">◐</div>
-            <div class="conteudo-configuracao">
-              <h3 data-i18n="settings.theme">Tema do site</h3>
-              <p data-i18n="settings.themeText">
-                Alterne entre o tema claro e o tema escuro.
-              </p>
-              <select id="configTema" onchange="alterarConfiguracoes()">
-                <option value="light" data-i18n="settings.light">Claro</option>
-                <option value="dark" data-i18n="settings.dark">Escuro</option>
-              </select>
-            </div>
-          </article>
-
-          <!-- tamanho geral da interface -->
-          <article class="card-configuracao">
-            <div class="icone-configuracao">Aa</div>
-            <div class="conteudo-configuracao">
-              <h3 data-i18n="settings.font">Tamanho do texto</h3>
-              <p data-i18n="settings.fontText">
-                Aumente ou diminua os textos de todo o sistema.
-              </p>
-              <select id="configFonte" onchange="alterarConfiguracoes()">
-                <option value="small" data-i18n="font.small">Pequena</option>
-                <option value="normal" data-i18n="font.normal">Normal</option>
-                <option value="large" data-i18n="font.large">Grande</option>
-              </select>
-            </div>
-          </article>
-
-          <!-- idioma da interface -->
-          <article class="card-configuracao">
-            <div class="icone-configuracao">文</div>
-            <div class="conteudo-configuracao">
-              <h3 data-i18n="settings.language">Idioma</h3>
-              <p data-i18n="settings.languageText">
-                Escolha o idioma usado pela interface.
-              </p>
-              <select id="configIdioma" onchange="alterarConfiguracoes()">
-                <option value="pt-BR">Português</option>
-                <option value="en">English</option>
-              </select>
-            </div>
-          </article>
-        </div>
-
-        <section class="area-restaurar-config">
-          <div>
-            <h3 data-i18n="settings.restoreTitle">Restaurar configurações</h3>
-            <p data-i18n="settings.restoreText">
-              Volta para tema claro, fonte normal e português.
-            </p>
-          </div>
-
-          <button
-            onclick="restaurarConfiguracoes()"
-            data-i18n="settings.restore"
-          >
-            Restaurar padrão
-          </button>
-        </section>
       </section>
     </main>
 
@@ -433,7 +609,7 @@
 
         <label>
           <span data-i18n="create.format">Formato de exportação</span>
-          <select id="tipoExportacao">
+          <select class="nexa-select" id="tipoExportacao">
             <option value="excel">Microsoft Excel</option>
             <option value="google">Google Sheets</option>
           </select>
@@ -564,7 +740,11 @@
 
         <label>
           <span data-i18n="field.type">Tipo do campo</span>
-          <select id="tipoCampoNovo" onchange="atualizarOpcoesCampo()">
+          <select
+            class="nexa-select"
+            id="tipoCampoNovo"
+            onchange="atualizarOpcoesCampo()"
+          >
             <option value="info" data-i18n="field.info">Informação</option>
             <option value="calculo" data-i18n="field.calculation">
               Cálculo automático
@@ -581,20 +761,71 @@
             -->
         <label>
           <span data-i18n="field.function">Função do campo</span>
-          <select id="funcaoCampoNovo"></select>
+          <select class="nexa-select" id="funcaoCampoNovo"></select>
         </label>
+
+        <!-- tipo real de dado armazenado na célula -->
+        <label id="grupoTipoDadoCampo">
+          <span data-i18n="field.dataType">Formato dos dados</span>
+          <select
+            class="nexa-select"
+            id="tipoDadoCampoNovo"
+            onchange="atualizarConfiguracaoTipoDado()"
+          >
+            <option value="texto" data-i18n="field.dataText">Texto</option>
+            <option value="numero" data-i18n="field.dataNumber">Número</option>
+            <option value="moeda" data-i18n="field.dataCurrency">
+              Dinheiro
+            </option>
+            <option value="porcentagem" data-i18n="field.dataPercent">
+              Porcentagem
+            </option>
+            <option value="data" data-i18n="field.dataDate">Data</option>
+            <option value="lista" data-i18n="field.dataList">
+              Lista de opções
+            </option>
+            <option value="booleano" data-i18n="field.dataBoolean">
+              Sim / Não
+            </option>
+          </select>
+        </label>
+
+        <!-- aparece quando o campo é uma lista -->
+        <label id="grupoOpcoesCampo" class="escondido">
+          <span data-i18n="field.options">Opções da lista</span>
+          <input
+            id="opcoesCampoNovo"
+            placeholder="Ex: Pendente, Em andamento, Concluído"
+            data-i18n-placeholder="field.optionsPlaceholder"
+          />
+        </label>
+
+        <!-- limites opcionais para números -->
+        <div id="grupoLimitesCampo" class="grade-limites-campo escondido">
+          <label>
+            <span data-i18n="field.min">Valor mínimo</span>
+            <input id="minCampoNovo" type="number" step="any" />
+          </label>
+          <label>
+            <span data-i18n="field.max">Valor máximo</span>
+            <input id="maxCampoNovo" type="number" step="any" />
+          </label>
+        </div>
+
+        <!-- identifica quando estamos editando um campo já existente -->
+        <input id="campoEditandoId" type="hidden" value="" />
 
         <!-- posição escolhida pelo usuário -->
         <label>
           <span data-i18n="field.position">Posição</span>
-          <select id="posicaoCampoNovo"></select>
+          <select class="nexa-select" id="posicaoCampoNovo"></select>
         </label>
 
         <div class="aviso-campo">
           <strong data-i18n="field.tipTitle">Como funciona?</strong>
           <p data-i18n="field.tipText">
             Campos de informação guardam dados. Campos de cálculo são
-            preenchidos automaticamente. A função informa ao AeroGrid como
+            preenchidos automaticamente. A função informa ao NexaGrid como
             aquele campo participa dos cálculos.
           </p>
         </div>
@@ -613,7 +844,74 @@
     </dialog>
 
     <!-- ================================================= -->
-    <!-- NOTIFICAÇÕES DO PRÓPRIO AEROGRID -->
+    <!-- MENU DE AÇÕES DE UM CAMPO -->
+    <!-- ================================================= -->
+    <div id="menuCampo" class="menu-campo escondido" role="menu">
+      <button
+        type="button"
+        onclick="editarCampoSelecionado()"
+        data-i18n="field.edit"
+      >
+        ✎ Editar campo
+      </button>
+      <button
+        type="button"
+        onclick="moverCampoSelecionado(-1)"
+        data-i18n="field.moveLeft"
+      >
+        ← Mover para esquerda
+      </button>
+      <button
+        type="button"
+        onclick="moverCampoSelecionado(1)"
+        data-i18n="field.moveRight"
+      >
+        → Mover para direita
+      </button>
+      <button
+        type="button"
+        class="acao-perigosa"
+        onclick="excluirCampoSelecionado()"
+        data-i18n="field.delete"
+      >
+        🗑 Excluir campo
+      </button>
+    </div>
+
+    <!-- avisos pequenos que não interrompem o trabalho -->
+    <div id="toastContainer" class="toast-container" aria-live="polite"></div>
+
+    <!-- ================================================= -->
+    <!-- ESCOLHA DA ABA DURANTE A IMPORTAÇÃO -->
+    <!-- ================================================= -->
+    <!--
+      Alguns arquivos do Excel possuem várias abas.
+      Antes o NexaGrid importava sempre a primeira, o que podia trazer
+      abas auxiliares, colunas ocultas ou informações que não eram a tabela
+      que o usuário queria. Este modal deixa o usuário escolher a aba correta.
+    -->
+    <dialog id="modalEscolherAbaImportacao" class="modal-abas-importacao">
+      <div class="conteudo-modal-abas">
+        <div class="titulo-modal">
+          <div class="icone-modal">▦</div>
+          <div>
+            <h2>Escolha a aba</h2>
+            <p>Este arquivo possui mais de uma planilha visível.</p>
+          </div>
+        </div>
+
+        <div id="listaAbasImportacao" class="lista-abas-importacao"></div>
+
+        <footer>
+          <button type="button" onclick="cancelarImportacaoExcelV10()">
+            Cancelar
+          </button>
+        </footer>
+      </div>
+    </dialog>
+
+    <!-- ================================================= -->
+    <!-- NOTIFICAÇÕES DO PRÓPRIO NEXAGRID -->
     <!-- ================================================= -->
     <!--
         substitui alert(), confirm() e prompt().
@@ -625,7 +923,7 @@
           <div id="iconeNotificacao" class="icone-notificacao">!</div>
 
           <div>
-            <h2 id="notificacaoTitulo">AeroGrid</h2>
+            <h2 id="notificacaoTitulo">NexaGrid</h2>
             <p id="notificacaoMensagem"></p>
           </div>
         </div>

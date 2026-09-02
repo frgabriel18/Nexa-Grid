@@ -1,9 +1,19 @@
+<!--
+=============================================================
+NEXAGRID - PÁGINA SOBRE
+=============================================================
+
+Esta página apresenta o projeto, o objetivo do NexaGrid e seus recursos.
+Ela usa o mesmo style.css e script.js para manter o tema e o idioma
+sincronizados com o restante do sistema.
+=============================================================
+-->
 <!doctype html>
 <html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Sobre - AeroGrid</title>
+    <title>Sobre - NexaGrid</title>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
@@ -16,10 +26,10 @@
     <!-- ================================================= -->
     <aside>
       <div class="marca">
-        <div class="logo-aerogrid"><span>◉</span></div>
+        <div class="logo-nexagrid"><span>◉</span></div>
         <div>
-          <h1>AeroGrid</h1>
-          <p>organize. visualize. respire.</p>
+          <h1>NexaGrid</h1>
+          <p>dados claros. decisões melhores.</p>
         </div>
       </div>
 
@@ -34,9 +44,15 @@
           <span class="texto-menu" data-i18n="nav.new">Nova planilha</span>
         </button>
 
-        <button onclick="window.location.href = 'index.html?config=1'">
+        <button onclick="window.location.href = 'configuracoes.html'">
           <span class="icone-menu">⚙</span>
           <span class="texto-menu" data-i18n="nav.settings">Configurações</span>
+        </button>
+
+        <!-- acesso à lixeira de planilhas -->
+        <button onclick="window.location.href = 'lixeira.html'">
+          <span class="icone-menu">🗑</span>
+          <span class="texto-menu" data-i18n="nav.trash">Lixeira</span>
         </button>
 
         <button class="menu-ativo">
@@ -55,7 +71,7 @@
           <span></span>
           <span data-i18n="status.ready">Sistema pronto</span>
         </div>
-        <small>AeroGrid Workspace</small>
+        <small>NexaGrid Workspace</small>
       </footer>
     </aside>
 
@@ -66,7 +82,7 @@
       <section class="pagina-sobre">
         <header class="cabecalho-sobre">
           <p class="saudacao" data-i18n="about.eyebrow">Conheça o projeto</p>
-          <h2 data-i18n="about.title">Sobre o AeroGrid</h2>
+          <h2 data-i18n="about.title">Sobre o NexaGrid</h2>
           <p class="subtitulo" data-i18n="about.subtitle">
             Uma forma simples de criar e organizar planilhas.
           </p>
@@ -74,12 +90,12 @@
 
         <section class="banner-sobre">
           <div>
-            <span class="mini-etiqueta">AeroGrid</span>
+            <span class="mini-etiqueta">NexaGrid</span>
             <h3 data-i18n="about.bannerTitle">
               Planilhas não precisam ser complicadas.
             </h3>
             <p data-i18n="about.bannerText">
-              O AeroGrid foi criado para tornar a criação de planilhas mais
+              O NexaGrid foi criado para tornar a criação de planilhas mais
               simples, rápida e acessível.
             </p>
           </div>
@@ -96,7 +112,7 @@
             <div>
               <h3 data-i18n="about.creatorTitle">Quem criou?</h3>
               <p data-i18n="about.creatorText">
-                O AeroGrid foi criado por Gabriel como um projeto para facilitar
+                O NexaGrid foi criado por Gabriel como um projeto para facilitar
                 a criação e organização de planilhas.
               </p>
             </div>
@@ -137,7 +153,7 @@
           </div>
 
           <p data-i18n="about.ideaText1">
-            O AeroGrid busca facilitar a criação de planilhas usando uma
+            O NexaGrid busca facilitar a criação de planilhas usando uma
             interface clara e fácil de entender.
           </p>
           <p data-i18n="about.ideaText2">
@@ -155,7 +171,7 @@
             <div>
               <h3 data-i18n="about.resourcesTitle">Principais recursos</h3>
               <p data-i18n="about.resourcesText">
-                O que o AeroGrid consegue fazer atualmente.
+                O que o NexaGrid consegue fazer atualmente.
               </p>
             </div>
           </div>
@@ -192,12 +208,44 @@
                 Gere arquivos compatíveis com Excel e Google Sheets.
               </p>
             </article>
+
+            <article>
+              <span>↑</span>
+              <h4 data-i18n="about.resourceImport">Importar</h4>
+              <p data-i18n="about.resourceImportText">
+                Abra arquivos XLSX, XLS e CSV dentro do NexaGrid.
+              </p>
+            </article>
+
+            <article>
+              <span>⌕</span>
+              <h4 data-i18n="about.resourceFilter">Filtrar</h4>
+              <p data-i18n="about.resourceFilterText">
+                Pesquise, ordene e filtre registros por coluna.
+              </p>
+            </article>
+
+            <article>
+              <span>↶</span>
+              <h4 data-i18n="about.resourceUndo">Desfazer</h4>
+              <p data-i18n="about.resourceUndoText">
+                Volte ou refaça alterações feitas durante a edição.
+              </p>
+            </article>
+
+            <article>
+              <span>⇅</span>
+              <h4 data-i18n="about.resourceBackup">Backup</h4>
+              <p data-i18n="about.resourceBackupText">
+                Salve e restaure todas as planilhas em um arquivo JSON.
+              </p>
+            </article>
           </div>
         </section>
 
         <footer class="final-sobre">
           <div>
-            <h3>AeroGrid</h3>
+            <h3>NexaGrid</h3>
             <p data-i18n="about.footerText">
               Criado para deixar planilhas mais simples.
             </p>
